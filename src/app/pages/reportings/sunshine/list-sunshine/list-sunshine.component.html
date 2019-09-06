@@ -1,0 +1,104 @@
+<div fxLayout="column">
+    <div class="flex-p">
+        <div fxLayout="row">
+            <mat-button-toggle-group #controls="matButtonToggleGroup">
+                <mat-button-toggle value="add">
+                    <a routerLink="/reportings/saisie-sunshine">
+                      <mat-icon>control_point</mat-icon>
+                    </a>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div><br />
+        <ngx-datatable
+            #table
+            class="material"
+            [headerHeight]="50"
+            [limit]="10"
+            [columnMode]="'force'"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [rows]="rows"
+            [loadingIndicator]="loadingIndicator"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            (activate)="onActivate($event)"
+            (select)='onSelect($event)'>
+            <ngx-datatable-column
+                [width]="30"
+                [sortable]="false"
+                [canAutoResize]="false"
+                [draggable]="true"
+                [resizeable]="false"
+                [headerCheckboxable]="true"
+                [checkboxable]="true">
+            </ngx-datatable-column>
+            <!--ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Code</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.type_sunshine.code}}
+                </ng-template>
+            </ngx-datatable-column-->
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Libelle</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.type_sunshine.libelle}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Entite</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.entite.libelle}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Mois</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{ month[row.mois-1] }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Annee</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.annee}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Valeur</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.valeur}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Date début</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{ (row.date_debut) ? (row.date_debut | date:"dd-MM-yyyy") : 'NC' }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Date fin</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{ (row.date_fin) ? (row.date_fin | date:"dd-MM-yyyy") : 'NC' }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Date saisie</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.date_saisi| date :  "dd/MM/y hh:mm"}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Commentaire</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{ (row.commentaire) ? row.commentaire : 'NC' }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Actions" prop="id">
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <a *ngIf="row.utilisateur" (click)="saisir(row);" matTooltip="Modifier le sunshine">
+                        <mat-icon>settings</mat-icon>
+                    </a>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>

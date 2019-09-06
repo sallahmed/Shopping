@@ -1,0 +1,63 @@
+.reporting-synthese-form{
+    .form-field-outer{
+        width: 280px;
+    }
+    .mat-radio-button{
+        margin-right: 12px;
+    }
+}
+.synthese, .synthese-detail {
+    width: 100%;
+    color: #000;
+    border: 1px solid #000;
+}
+.detail{
+    width: 100%;
+}
+.detail, th, td {
+    border: 1px solid lightgrey;
+}
+
+th {/*
+    font-weight: 600;
+    border: 1px solid #000;*/
+    padding: 5px;
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+    //border: 1px solid #000;
+    min-width: 70px;
+}
+td {
+    padding: 2px;
+    font-size: 12px;
+    text-align: center;
+    //border: 1px solid #000;
+}
+
+.table{
+    display:table;
+    width:100%;
+}
+
+.red, .green { font-weight: 600; }
+.first {
+    text-align: left;
+}
+.center {
+    text-align: center;
+}
+.pink {
+    background: #E57373;
+    //color: #E57373;
+}
+.gray {
+    background: #888888;
+    //color: #888888;
+}
+td.lost, .red {
+    color: #f11;
+}
+td.save, .green {
+    color: #0a0;
+}

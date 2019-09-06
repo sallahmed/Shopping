@@ -1,0 +1,42 @@
+<div fxLayout="column" fxLayout.gt-sm="row wrap">
+    <div fxFlex="100" class="flex-p">
+        <mat-card>
+            <mat-card-header><h2>Traitement du dysfonctionnement</h2></mat-card-header>
+        </mat-card>
+        <mat-card>
+            <mat-card-content>
+                <div fxLayout="row">
+                    <div fxFlex="50"><mat-icon>arrow_right</mat-icon><b>Libelle: </b><span>{{dysfonctionnement.libelle}}</span></div>
+                    <div fxFlex="50"><span><mat-icon>arrow_right</mat-icon><b>Porteur: </b>{{dysfonctionnement.porteur}}</span></div>
+                </div>
+                <div fxLayout="row">
+                    <div fxFlex="50"><span><mat-icon>arrow_right</mat-icon><b>Date d'enregistrement: </b>{{dysfonctionnement.dateDebut | date :  "dd/MM/y" }}</span></div>
+                    <div fxFlex="50"><span><mat-icon>arrow_right</mat-icon><b>Contrôle: </b>{{dysfonctionnement.controle}}</span></div>
+                </div>
+                <div fxLayout="row">
+                    <div fxFlex="50"><span><mat-icon>arrow_right</mat-icon><b>Date de fin prévue: </b>{{dysfonctionnement.dateFin | date :  "dd/MM/y" }}</span></div>
+                    <div fxFlex="50"><span><mat-icon>arrow_right</mat-icon><b>Instance: </b></span></div>
+                </div>
+                <mat-divider></mat-divider>
+                <br />
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">Description :</span>
+                    <span>{{dysfonctionnement.description}}</span>
+                </p>
+
+            </mat-card-content>
+            <mat-card-actions fxLayout="row" fxLayoutAlign="space-evenly">
+                <a (click)="modifierStatut(dysfonctionnement);" matTooltip="Modifier le statut">
+                    <button mat-raised-button color="accent" class="right-btn">Modifier statut<mat-icon>edit</mat-icon></button>
+                </a>
+                <!--<a (click)="terminer(dysfonctionnement);" matTooltip="Demande de report">
+                    <button mat-raised-button color="warn" class="right-btn">Demande de report<mat-icon>next_week</mat-icon></button>
+                </a>
+                <a (click)="terminerExecution(dysfonctionnement);" matTooltip="Fin d'exécution">
+                    <button mat-raised-button color="primary" class="left-btn">Fin d'exécution<mat-icon>done</mat-icon></button>
+                </a>-->
+            </mat-card-actions>
+        </mat-card>
+    </div>
+</div>
+<br /><br />

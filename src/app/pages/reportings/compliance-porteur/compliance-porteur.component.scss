@@ -1,0 +1,66 @@
+.compliance-porteur-form{
+    .form-field-outer{
+        width: 280px;
+    }
+    .mat-radio-button{
+        margin-right: 12px;
+    }
+}
+.detail{
+    width: 100%;
+}
+.detail, th, td {
+    border: 1px solid lightgrey;
+}
+
+.synthese, .synthese-detail {
+    width: 100%;
+    color: #000;
+    border: 1px solid #000;
+}
+/*
+th {
+    //padding: 5px;
+    color: #fff;
+    //text-align: center;
+    background: #555;
+    //font-weight: 600;
+    border: 1px solid #000;
+}
+td {
+    //: 2px;
+    text-align: right;
+    border: 1px solid #000;
+}
+*/
+.table{
+    display:table;
+    width:100%;
+    //table-layout:fixed;
+    //border-collapse:collapse;
+}
+/*
+.table .row{
+    display:table-row;
+}*/
+/*
+.table .row > div{
+    display:table-cell;
+    vertical-align:middle;
+}*/
+
+tr.save, tr.lost {
+    background: #ddd;
+    font-weight: 600;
+}
+td.lost, .red {
+    color: #f11;
+}
+td.save, .green {
+    color: #0a0;
+}
+.red, .green { font-weight: 600; }
+.first {
+    text-align: left;
+}
+#combo-chart-parent { display: grid; }

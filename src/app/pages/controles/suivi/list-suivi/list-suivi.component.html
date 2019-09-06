@@ -1,0 +1,76 @@
+<div fxLayout="column">
+    <div class="flex-p">
+        <div fxLayout="row">
+            <mat-button-toggle-group #controls="matButtonToggleGroup">
+                <mat-button-toggle value="search">
+                    <mat-icon>search</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <form class="controle-search" [class.show]="controls.value == 'date_saisie'">
+            <mat-form-field class="user-search-input">
+                <input matInput placeholder="Search suivi by date_saisie..." name="search">
+            </mat-form-field>
+        </form>
+        <div fxLayout="column" class="mat-elevation-z8">           
+            <mat-form-field class="p-1">
+                <input matInput placeholder="Type to filter the date_saisie column..." (keyup)="updateFilter($event)">
+            </mat-form-field>
+        </div>
+        <ngx-datatable
+            #table
+            class="material"
+            [headerHeight]="50"
+            [limit]="10"
+            [columnMode]="'force'"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [rows]="rows"
+            [loadingIndicator]="loadingIndicator"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            (activate)="onActivate($event)"
+            (select)='onSelect($event)'>
+            <ngx-datatable-column
+                [width]="30"
+                [sortable]="false"
+                [canAutoResize]="false"
+                [draggable]="true"
+                [resizeable]="false"
+                [headerCheckboxable]="true"
+                [checkboxable]="true">
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="controle">
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                  {{value}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="type">
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                  {{value}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="periode">
+              <ng-template ngx-datatable-cell-template let-value="value">
+                {{value}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="date">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    {{value | date :  "dd/MM/y"}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="actions" prop="id">
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <a *ngIf="!row.date_saisie" (click)="saisir(row.suivi);" matTooltip="{{'suivi.saisie'| translate}}">
+                        <mat-icon>arrow_right_alt</mat-icon>
+                    </a>
+                    <a *ngIf="row.date_saisie" (click)="saisir(row.suivi);" matTooltip="{{'suivi.edit'| translate}}">
+                        <mat-icon>settings</mat-icon>
+                    </a>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>

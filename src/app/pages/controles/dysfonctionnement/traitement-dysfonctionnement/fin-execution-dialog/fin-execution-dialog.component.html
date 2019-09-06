@@ -1,0 +1,18 @@
+<h1 mat-dialog-title><span *ngIf="dysfonctionnement.id">Fin d'exécution</span> du plan d'action</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form" class="fin-execution-form">
+        <div fxLayout="column" class="form-field-outer">
+            <mat-form-field class="w-100">
+                <input matInput type="date" placeholder="Date" formControlName="date">
+            </mat-form-field>
+            <mat-form-field class="w-100">
+                <mat-placeholder><mat-icon>texture</mat-icon>Commentaire</mat-placeholder>
+                <input matInput formControlName="commentaire">
+            </mat-form-field>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-evenly">
+    <button mat-raised-button color="primary" [mat-dialog-close]="form.value" [disabled]="!form.valid"><span>Enregistrer</span></button>
+    <button mat-raised-button color="warn" (click)="close()">Annuler</button>
+</div>

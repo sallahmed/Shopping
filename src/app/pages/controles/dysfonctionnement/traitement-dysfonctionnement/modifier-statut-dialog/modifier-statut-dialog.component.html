@@ -1,0 +1,34 @@
+<h1 mat-dialog-title><span *ngIf="!dysfonctionnement.id">Ajouter</span><span *ngIf="dysfonctionnement.id">Modifier</span> un dysfonctionnement</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form" class="modifier-statut-form">
+        <mat-tab-group class="vertical-tabs">
+            <mat-tab label="Général">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100" style="display: none">
+                        <input matInput formControlName="id">
+                    </mat-form-field>
+                    <mat-form-field class="w-100" formGroupName="statut">
+                        <mat-select placeholder="Statut" formControlName="id" required>
+                            <!--<mat-option value="null" >Changer le statut</mat-option>!-->
+                            <!--<mat-option value="1">Abandonné</mat-option>!-->
+                            <mat-option value="2">En cours</mat-option>
+                            <mat-option value="3">Fait</mat-option>
+                            <mat-option value="4">Soldé</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>texture</mat-icon>Commentaire</mat-placeholder>
+                        <textarea matInput formControlName="commentaire"></textarea>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </form>
+</div>
+<div *ngIf="isSubmitted">
+    <mat-progress-bar [color]="accent" mode="indeterminate" value="40"></mat-progress-bar>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-evenly">
+    <button mat-raised-button color="primary" (click)="enregistrer(form.value)" [disabled]="!form.valid"><span>Enregistrer</span></button>
+    <button mat-raised-button color="warn" (click)="close()">Annuler</button>
+</div>

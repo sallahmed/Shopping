@@ -1,0 +1,21 @@
+p { margin-bottom: 10px; }
+span.left {
+  padding: 2px 10px;
+  width: 30%;
+  text-transform: capitalize;
+  text-decoration: underline;
+  font-weight: bold;
+  float: left;
+}
+span.right {
+  padding: 2px 10px;
+  width: 65%;
+  float: left;
+  text-align: justify;
+}
+.right-btn { float: right; }
+.left-btn { float: left; }
+.mat-icon{
+  padding: 2px 10px;
+  width: 10%;
+}

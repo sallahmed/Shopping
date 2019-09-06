@@ -1,0 +1,133 @@
+<div style="display: flex; flex-direction:column; flex-wrap: wrap">
+    <div fxFlex="100" class="flex-p">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-subtitle><h2>{{'title.calbl'| translate}}</h2></mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div fxFlex="30">
+                    <button routerLink="/reportings/saisie-ca-entite"
+                            (click)="setCA('entite')" mat-raised-button color="accent">{{'buton.byentity'| translate}}</button>
+                    <button routerLink="/reportings/saisie-ca-entite"
+                            (click)="setCA('domaine')" mat-raised-button color="primary">{{'buton.bydomain'| translate}}</button>
+                </div><br /><br />
+                <div fxFlex="75" fxLayoutAlign="right right">
+                    <form [formGroup]="form" class="ca-entite-form">
+                        <div fxLayout="row" fxLayoutGap="20px">
+                            <div formGroupName="entite">
+                                <mat-form-field class="w-100">
+                                    <mat-select placeholder="{{'control.entity'| translate}}" formControlName="id" #Entite ngModel name="entite" [(value)]="selected" required>
+                                        <mat-option value="groupe">Groupe Sonatel</mat-option>
+                                        <mat-option *ngFor="let ent of entites" [value]="ent.id">
+                                            {{ent.libelle}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div formGroupName="domaine">
+                                <mat-form-field class="w-100">
+                                    <mat-select placeholder="{{'menu.domain'| translate}}" formControlName="id" #Domaine ngModel name="domaine" [(value)]="selectedDomaine" required>
+                                        <mat-option value="">-- {{'title.nochoice'| translate}} --</mat-option>
+                                        <mat-option *ngFor="let dom of domaines" [value]="dom.id">
+                                            {{dom.libelle}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <mat-form-field class="w-100">
+                                    <mat-select placeholder="{{'title.exerciseyear'| translate}}" formControlName="annee" #Annee ngModel name="Annee" required>
+                                        <mat-option *ngFor="let an of annees" [value]="an.annee">
+                                            {{an.annee}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="end">
+                                <button mat-mini-fab color="primary"
+                                        (click)="search_ca(Entite.value, Domaine.value, Annee.value)">
+                                    <mat-icon>search</mat-icon>
+                                </button>
+                            </div>
+                            <div *ngIf="rows?.length >= 1" fxLayoutAlign="end">
+                                <button routerLink="/reportings/saisie-ca-entite"
+                                        (click)="exportAsExcel()"
+                                        mat-raised-button color="accent">
+                                    <mat-icon>get_app</mat-icon>{{'buton.export'| translate}}
+                                </button>
+                            </div>
+                            <div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+                                <mat-spinner [diameter]="40" color="primary"></mat-spinner>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <div fxLayout="column">
+        <div class="flex-p">
+            <ngx-datatable
+                    #table
+                    class="material"
+                    [headerHeight]="50"
+                    [limit]="10"
+                    [columnMode]="'force'"
+                    [footerHeight]="50"
+                    [rowHeight]="'auto'"
+                    [rows]="rows"
+                    [loadingIndicator]="loadingIndicator"
+                    [selected]="selected"
+                    [selectionType]="'checkbox'"
+                    (activate)="onActivate($event)"
+                    (select)='onSelect($event)'>
+                <ngx-datatable-column
+                        [width]="30"
+                        [sortable]="false"
+                        [canAutoResize]="true"
+                        [draggable]="true"
+                        [resizeable]="false"
+                        [headerCheckboxable]="true"
+                        [checkboxable]="true">
+                </ngx-datatable-column>
+                <ngx-datatable-column>
+                    <ng-template ngx-datatable-header-template><span>{{'control.entity'| translate}}</span></ng-template>
+                    <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                        {{ row.entite ? row.entite.libelle : 'NC' }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column>
+                    <ng-template ngx-datatable-header-template><span>{{'menu.domain'| translate}}</span></ng-template>
+                    <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                        {{ row.domaine ? row.domaine.libelle : 'NC' }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column>
+                    <ng-template ngx-datatable-header-template><span>Global</span></ng-template>
+                    <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                        {{ row.ca_global }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column>
+                    <ng-template ngx-datatable-header-template><span>{{'title.month'| translate}}</span></ng-template>
+                    <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                        {{ month[row.mois-1] }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column>
+                    <ng-template ngx-datatable-header-template><span>{{'title.year'| translate}}</span></ng-template>
+                    <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                        {{ row.annee }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Actions" prop="id">
+                    <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                        <a *ngIf="row.id" (click)="saisir(row);" matTooltip="Modifier le CA">
+                            <mat-icon>settings</mat-icon>
+                        </a>
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
+        </div>
+    </div>
+</div>

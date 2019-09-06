@@ -1,0 +1,36 @@
+<div fxLayout="column">
+    <div class="flex-p">
+        <mat-card>
+            <mat-card-header>                
+                <mat-card-subtitle><h2>Checkbox configuration</h2></mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <section class="py-1">
+                    <mat-checkbox [(ngModel)]="checked">Checked</mat-checkbox>
+                    <mat-checkbox [(ngModel)]="indeterminate">Indeterminate</mat-checkbox>
+                </section>
+                <section class="py-1">
+                    <label>Align:</label>
+                    <mat-radio-group [(ngModel)]="align">
+                        <mat-radio-button value="start">Start</mat-radio-button>
+                        <mat-radio-button value="end">End</mat-radio-button>
+                    </mat-radio-group>
+                </section>
+                <section class="py-1">
+                    <mat-checkbox [(ngModel)]="disabled">Disabled</mat-checkbox>
+                </section>
+                <hr>
+                <h2 class="py-1">Result</h2>
+                <section class="py-1">
+                    <mat-checkbox
+                        [(ngModel)]="checked"
+                        [(indeterminate)]="indeterminate"
+                        [labelPosition]="align"
+                        [disabled]="disabled">
+                      I'm a checkbox
+                    </mat-checkbox>
+                </section>               
+            </mat-card-content>
+        </mat-card>
+    </div> 
+</div>

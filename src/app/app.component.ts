@@ -1,27 +1,21 @@
-import { Component } from '@angular/core';
-
-import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Component, ViewChild} from '@angular/core';
+import { AppSettings } from './app.settings';
+import { Settings } from './app.settings.model';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss']
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(
-    private platform: Platform,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar
-  ) {
-    this.initializeApp();
+  public settings: Settings;
+  constructor(public appSettings: AppSettings, translate: TranslateService) {
+      this.settings = this.appSettings.settings;
+      /*translate.addLangs(['en', 'fr']);
+      translate.setDefaultLang('fr');*/
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-    });
-  }
+  ngOnInit() { }
+
 }

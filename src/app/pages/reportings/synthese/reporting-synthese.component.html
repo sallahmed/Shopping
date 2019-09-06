@@ -1,0 +1,121 @@
+<div style="display: flex; flex-direction:column; flex-wrap: wrap">
+    <!--<h2><span >Reporting</span> compliance</h2>!-->
+    <div>
+        <form [formGroup]="form" class="reporting-synthese-form">
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center">
+                <input matInput formControlName="id" hidden>
+                <div formGroupName="entite">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'control.entity'| translate}}" [(ngModel)]="selected" formControlName="id"  required>
+                            <mat-option value="null" >Groupe Sonatel</mat-option>
+                            <mat-option *ngFor="let ent of entites" [value]="ent.id">
+                                {{ent.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div  formGroupName="domaine">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.domain'| translate}}" [(ngModel)]="selected1" formControlName="id">
+                            <mat-option value="null" >{{'title.nochoice'| translate}}</mat-option>
+                            <mat-option *ngFor="let domaine of domaines" [value]="domaine.id">
+                                {{domaine.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div >
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'title.exerciseyear'| translate}}" [(ngModel)]="year" formControlName="annee"  required>
+                            <mat-option *ngFor="let an of annees" [value]="an.annee">
+                                {{an.annee}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="end">
+                    <button mat-mini-fab color="primary" (click)="rechercher(form.value)" [disabled]="!form.valid">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+                <mat-spinner [diameter]="40" color="primary"></mat-spinner>
+            </div>
+        </form>
+    </div>
+
+    <div fxFlex="100" class="flex-p" *ngIf="data">
+        <div class="spinner-container" *ngIf="loadingIndicator">
+            <mat-progress-bar mode="indeterminatre" value="40"></mat-progress-bar>
+        </div>
+
+        <table  #table class="synthese mat-elevation-z8" >
+
+            <tr>
+                <th class="gray mat-header-cell">{{'synthese.rubric'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.jan'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.feb'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.mar'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.apr'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.may'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.jun'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.jul'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.aug'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.sept'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.oct'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.nov'| translate}}</th>
+                <th class="pink mat-header-cell">{{'month.dec'| translate}}</th>
+                <th class="gray mat-header-cell">{{'synthese.cumul'| translate}}</th>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.totalnumber'| translate}} </th>
+                <td  *ngFor="let dt of data">{{ dt.nbreControles }}</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.echus'| translate}} </th>
+                <td class="mat-cell" *ngFor="let dt of data">{{ dt.echus }}</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.realises'| translate}} </th>
+                <td class="mat-cell" *ngFor="let dt of data">{{ dt.realises }}</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.pourcreal'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.pourcentageRealisation }} %</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.valorises'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.valorises }}</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.pourcval'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.pourcentageValorisation }} %</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'synthese.totalpa'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.pourcentageValorisation }} %</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'synthese.pourcrealpa'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.pourcentageValorisation }} %</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'synthese.estimloss'| translate}} </th>
+                <td *ngFor="let dt of data" class="red">{{ dt.estimationPerte }} </td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'synthese.pourcloss'| translate}} </th>
+                <td *ngFor="let dt of data" class="red">{{ dt.pourcentagePerte }} %</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'synthese.sauves'| translate}} </th>
+                <td *ngFor="let dt of data" class="green">{{ dt.revenuSauve }} </td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'synthese.pourcsave'| translate}} </th>
+                <td *ngFor="let dt of data" class="green">{{ dt.pourcentageSauve}} %</td>
+            </tr>
+        </table>
+    </div>
+</div>

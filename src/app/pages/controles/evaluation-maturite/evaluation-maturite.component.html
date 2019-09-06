@@ -1,0 +1,133 @@
+<div fxLayout="column">
+    <div class="flex-p">
+        <!--<div fxLayout="row" fxLayoutAlign="space-between center">
+            <button mat-raised-button pull-right color="accent" (click)="exportAsExcel()"><mat-icon>get_app</mat-icon>Exporter</button>
+        </div>-->
+        <div fxLayoutAlign="center center"><strong>Taux de maitrise :</strong>
+            <mat-chip-list>
+                <mat-chip  color="accent" class="info-chip">
+                    <strong>{{ tauxMaitrise| number:'1.2' }} %</strong>
+                </mat-chip>
+            </mat-chip-list>
+        </div>
+        <div fxLayout="column" class="mat-elevation-z8">           
+            <mat-form-field class="p-1">
+                <input matInput placeholder="Type to filter the libelle column..." (keyup)="updateFilter($event)">
+            </mat-form-field>
+        </div>
+        <ngx-datatable
+            #table
+            class="material"
+            [headerHeight]="50"
+            [limit]="10"
+            [columnMode]="'force'"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [rows]="rows"
+            [loadingIndicator]="loadingIndicator"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            (activate)="onActivate($event)"
+            (select)='onSelect($event)'>
+            <ngx-datatable-column
+                [width]="30"
+                [sortable]="false"
+                [canAutoResize]="false"
+                [draggable]="true"
+                [resizeable]="false"
+                [headerCheckboxable]="true"
+                [checkboxable]="true">
+            </ngx-datatable-column>
+
+            <!--<ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>reference</span>
+                </ng-template>
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                  {{row.reference}}
+              </ng-template>
+            </ngx-datatable-column>-->
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Contrôle</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.controle.libelle}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Maturité</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <img *ngIf="row.taux==1" src="assets/img/emojis/Image1.png" class="transition-2" height="30" width="37">
+                    <img *ngIf="row.taux==0 && row.ecartMoyen!=0" src="assets/img/emojis/Image2.png" class="transition-2" height="30" width="37">
+                    <img *ngIf="row.taux==0 && row.ecartMoyen==0" src="assets/img/emojis/Image16.png" class="transition-2" height="30" width="37">
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Ecart moyen(KF)</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{ row.ecartMoyen!=0? row.ecartMoyen: '-'  }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Correction</span>
+                </ng-template>
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                  <img *ngIf="row.correction==0 && row.ecartMoyen!=0" src="assets/img/emojis/Image3.jpg" class="transition-2" height="22" width="22">
+                  <img *ngIf="row.correction==1 && row.ecartMoyen!=0" src="assets/img/emojis/Image4.jpg" class="transition-2" height="22" width="22">
+                  <span *ngIf="row.correction==0 && row.ecartMoyen==0">N/A</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Impact annuel(KF)</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{ row.impact? row.impact: '-'}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Taux de pertes/CA</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{ row.tauxPerte }}%
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Tendance écart</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <img *ngIf="row.tauxPerte>0" src="assets/img/emojis/Image5.png" class="transition-2" height="30" width="37">
+                    <img *ngIf="row.tauxPerte==0" src="assets/img/emojis/Image6.png" class="transition-2" height="30" width="37">
+                    <img *ngIf="row.tauxPerte<0" src="assets/img/emojis/Image7.png" class="transition-2" height="30" width="37">
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Sensibilité (1-3)</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{ row.ecartMoyen!=0?row.sensibilite:'-' }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Niveau de maitrise</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <img *ngIf="row.sensibilite==1 && row.correction==0" src="assets/img/emojis/Image8.png" class="transition-2" height="22" width="22">
+                    <img *ngIf="row.sensibilite!=1 && row.correction==0 && row.ecartMoyen!=0" src="assets/img/emojis/Image14.jpg" class="transition-2" height="22" width="22">
+                    <img *ngIf="row.sensibilite!=1 && row.correction==0 && row.ecartMoyen==0" src="assets/img/emojis/Image15.png" class="transition-2" height="22" width="22">
+                    <img *ngIf="row.sensibilite!=1 && row.correction==1" src="assets/img/emojis/Image9.png" class="transition-2" height="35" width="35">
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>

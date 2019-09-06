@@ -1,0 +1,330 @@
+<div style="display: flex; flex-direction:column; flex-wrap: wrap">
+    <!--<h2><span >Reporting</span> compliance</h2>!-->
+    <div>
+        <form [formGroup]="form" class="reporting-compliance-form">
+            <div fxLayout="row"  fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                <!--<div fxFlex="50%" fxFlex.gt-sm="100%">-->
+                <input matInput formControlName="id" hidden>
+                <!--<div  formGroupName="typologie_perte">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Typologie de perte" formControlName="id" required>
+                            <mat-option *ngFor="let typePerte of typologiesPertes" [value]="typePerte.id">
+                                {{typePerte.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>-->
+                <div  formGroupName="type_controle">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.typectrl'| translate}}" [(ngModel)]="selected1" formControlName="id">
+                            <mat-option value="null" >{{'title.nochoice'| translate}}</mat-option>
+                            <mat-option *ngFor="let tpCtrl of typeControles" [value]="tpCtrl.id">
+                                {{tpCtrl.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div  formGroupName="domaine">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.domain'| translate}}" [(ngModel)]="selected2" formControlName="id">
+                            <mat-option value="null" >{{'title.nochoice'| translate}}</mat-option>
+                            <mat-option *ngFor="let domaine of domaines" [value]="domaine.id">
+                                {{domaine.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div  formGroupName="porteur">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'control.porteur'| translate}}" [(ngModel)]="selected3" formControlName="id">
+                            <mat-option value="null" >{{'title.nochoice'| translate}}</mat-option>
+                            <mat-option *ngFor="let porteur of porteurs" [value]="porteur.id">
+                                {{porteur.prenom}} {{porteur.nom}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div  formGroupName="entite">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'control.entity'| translate}}" [(ngModel)]="selected" formControlName="id">
+                            <mat-option value="null" (click)="getEntite($event, null)">Groupe Sonatel</mat-option>
+                            <mat-option *ngFor="let entite of entites" [value]="entite.id" (click)="getEntite($event, entite)">
+                                {{entite.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <!--<div>
+                    <mat-form-field class="w-100">
+                        <input matInput type="date" placeholder="Date début" formControlName="date_debut">
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field class="w-100">
+                        <input matInput type="date" placeholder="Date fin" formControlName="date_fin">
+                    </mat-form-field>
+                </div>-->
+                <div  fxLayout="row" fxLayoutAlign="end">
+                    <button mat-mini-fab color="primary" (click)="rechercher(form.value)" [disabled]="!form.valid"><mat-icon>search</mat-icon></button>
+                    <!--<button mat-raised-button color="warn" (click)="close()">Annuler</button>!-->
+                </div>
+                <div *ngIf="data?.length >= 1" align="end"><button mat-raised-button pull-right color="accent" (click)="exportAsExcel()"><mat-icon>get_app</mat-icon>{{'buton.export'| translate}}</button></div>
+                <div *ngIf="data?.length >= 1"><button mat-raised-button pull-right color="warn" (click)="diffuser(form.value)">{{'buton.diffusion'| translate}}<mat-icon>play_arrow</mat-icon></button></div>
+            </div>
+            <div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+                <mat-spinner [diameter]="40" color="primary"></mat-spinner>
+            </div>
+            <!--<div *ngIf="cpt == 0" class="flex-p" fxLayoutAlign="center center">
+                <span>Aucun résultat trouvé!!</span>
+            </div>-->
+            <!--<div fxLayout="row" fxLayoutGap="30px">
+                <div class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <input matInput type="date" placeholder="Date fin" formControlName="date_fin">
+                    </mat-form-field>
+                </div>
+            </div>!-->
+        </form>
+    </div>
+
+    <div fxFlex="100" class="flex-p">
+        <!--<mat-card>
+            <mat-card-header><h2>Synthèse globale</h2></mat-card-header>
+            <mat-card-actions *ngIf="data?.length >= 1" align="end"><button mat-raised-button pull-right color="accent" (click)="exportAsExcel()"><mat-icon>get_app</mat-icon>Exporter</button></mat-card-actions>
+        </mat-card>-->
+        <div class="spinner-container" *ngIf="loadingIndicator">
+            <mat-progress-bar mode="indeterminatre" value="40"></mat-progress-bar>
+        </div>
+
+        <table  #table class="table mat-elevation-z8" >
+            <tr>
+                <td rowspan="2"></td>
+            </tr>
+            <tr>
+                <!--<th class="mat-header-cell datatable-header">Janvier</th>-->
+                <th class="mat-header-cell">{{'month.jan'| translate}}</th>
+                <th class="mat-header-cell">{{'month.feb'| translate}}</th>
+                <th class="mat-header-cell">{{'month.mar'| translate}}</th>
+                <th class="mat-header-cell">{{'month.apr'| translate}}</th>
+                <th class="mat-header-cell">{{'month.may'| translate}}</th>
+                <th class="mat-header-cell">{{'month.jun'| translate}}</th>
+                <th class="mat-header-cell">{{'month.jul'| translate}}</th>
+                <th class="mat-header-cell">{{'month.aug'| translate}}</th>
+                <th class="mat-header-cell">{{'month.sept'| translate}}</th>
+                <th class="mat-header-cell">{{'month.oct'| translate}}</th>
+                <th class="mat-header-cell">{{'month.nov'| translate}}</th>
+                <th class="mat-header-cell">{{'month.dec'| translate}}</th>
+            </tr>
+            <tr class="datatable-body">
+                <th class="first mat-header-cell"> {{'compliance.totalnumber'| translate}} </th>
+                <td  *ngFor="let dt of data">{{ dt.nbreControles }}</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.echus'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.echus }}</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.nonechus'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.nonEchus }}</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.realises'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.realises }}</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.nonrealises'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.nonRealises }}</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.pourcreal'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.pourcentageRealisation }} %</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.valorises'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.valorises }}</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.pourcval'| translate}} </th>
+                <td *ngFor="let dt of data">{{ dt.pourcentageValorisation }} %</td>
+            </tr>
+            <tr>
+                <th class="first mat-header-cell"> {{'compliance.pourcmaitrise'| translate}}</th>
+                <td *ngFor="let dt of data">{{ dt.maitrises }} %</td>
+            </tr>
+        </table>
+        <!--<mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 30]"></mat-paginator>!-->
+    </div>
+
+    <!--<div *ngIf="ngxData" fxFlex="50" class="flex-p">-->
+    <!--
+    <div fxLayout="row">
+        <div *ngIf="dataVal?.length >= 12" fxFlex="50" class="flex-p">
+            <mat-card>
+                <mat-card-header fxLayoutAlign="center center">
+                    <mat-card-subtitle><h2>Contrôles réalisés / non réalisés</h2></mat-card-subtitle>
+                </mat-card-header>
+                <div class="w-100 h-300p">
+                    <ngx-charts-line-chart
+                            [scheme]="colorScheme"
+                            [results]="real"
+                            [xAxis]="showXAxis"
+                            [yAxis]="showYAxis"
+                            [legend]="showLegend"
+                            [showXAxisLabel]="showXAxisLabel"
+                            [showYAxisLabel]="showYAxisLabel"
+                            [xAxisLabel]="xAxisLabel"
+                            [yAxisLabel]="yAxisLabel"
+                            [autoScale]="autoScale"
+                            [roundDomains]="roundDomains"
+                            (select)="onSelect($event)">
+                    </ngx-charts-line-chart>
+                </div>
+            </mat-card>
+        </div>
+        <div *ngIf="dataVal?.length >= 12" fxFlex="50" class="flex-p">
+            <mat-card>
+                <mat-card-header fxLayoutAlign="center center">
+                    <mat-card-subtitle><h2>Contrôles valorisés / non valorisés</h2></mat-card-subtitle>
+                </mat-card-header>
+                <div class="w-100 h-300p">
+                    <ngx-charts-line-chart
+                            [scheme]="colorScheme"
+                            [results]="val"
+                            [gradient]="gradient"
+                            [xAxis]="showXAxis"
+                            [yAxis]="showYAxis"
+                            [legend]="showLegend"
+                            [showXAxisLabel]="showXAxisLabel"
+                            [showYAxisLabel]="showYAxisLabel"
+                            [xAxisLabel]="xAxisLabel"
+                            [yAxisLabel]="yAxisLabel"
+                            [autoScale]="autoScale"
+                            [roundDomains]="roundDomains"
+                            (select)="onSelect($event)">
+                    </ngx-charts-line-chart>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+    <div fxLayout="row">
+        <!--<div *ngIf="ngxData?.length >= 12" fxFlex="100" class="flex-p">
+            <mat-card>
+                <mat-card-header fxLayoutAlign="center center">
+                    <mat-card-subtitle><h2>Contrôles échus / non échus</h2></mat-card-subtitle>
+                </mat-card-header>
+                <div class="w-100 h-300p">
+                    <ngx-charts-bar-vertical-2d
+                            [scheme]="colorScheme"
+                            [results]="echeance"
+                            [xAxis]="showXAxis"
+                            [yAxis]="showYAxis"
+                            [legend]="showLegend"
+                            [showXAxisLabel]="showXAxisLabel"
+                            [showYAxisLabel]="showYAxisLabel"
+                            [xAxisLabel]="xAxisLabel"
+                            [yAxisLabel]="yAxisLabel"
+                            (select)="onSelect($event)">
+                    </ngx-charts-bar-vertical-2d>
+                </div>
+            </mat-card>
+        </div>-->
+    <!--
+    </div>
+    -->
+    <div *ngIf="dataVal?.length >= 12" fxFlex="100" class="flex-p">
+        <mat-card>
+            <mat-card-header fxLayoutAlign="center center">
+                <mat-card-subtitle><h2>{{'compliance.pourcreal'| translate}}</h2></mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-300p">
+                <app-combo-chart-component
+                        *ngIf="chartType === 'combo-chart'"
+                        class="chart-container"
+                        [view]="[width + legendSpacing, height]"
+                        [scheme]="comboBarScheme"
+                        [colorSchemeLine]="lineChartScheme"
+                        [results]="ngxData"
+                        [lineChart]="tauxReal"
+                        [tooltipDisabled]="tooltipDisabled"
+                        [yAxisTickFormatting]="yLeftTickFormat"
+                        [yLeftAxisScaleFactor]="yLeftAxisScale"
+                        [yRightAxisScaleFactor]="yRightAxisScale"
+                        [yRightAxisTickFormatting]="yRightTickFormat"
+                        [gradient]="gradient"
+                        [xAxis]="showXAxis"
+                        [yAxis]="showYAxis"
+                        [legend]="showLegend"
+                        [legendTitle]="legendTitle"
+                        [showGridLines]="showGridLines"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [showRightYAxisLabel]="showYAxisLabel"
+                        [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel"
+                        [yAxisLabelRight]="yAxisLabelRight"
+                        [autoScale]="autoScale"
+                        (select)="onSelect($event)">
+                </app-combo-chart-component>
+            </div>
+        </mat-card>
+    </div>
+    <div *ngIf="dataVal?.length >= 12" fxFlex="100" class="flex-p">
+        <mat-card>
+            <mat-card-header fxLayoutAlign="center center">
+                <mat-card-subtitle><h2>{{'compliance.pourcval'| translate}}</h2></mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-300p">
+                <app-combo-chart-component
+                        *ngIf="chartType === 'combo-chart'"
+                        class="chart-container"
+                        [view]="view"
+                        [scheme]="comboBarScheme"
+                        [colorSchemeLine]="lineChartScheme"
+                        [results]="ngxData"
+                        [lineChart]="tauxVal"
+                        [tooltipDisabled]="tooltipDisabled"
+                        [yAxisTickFormatting]="yLeftTickFormat"
+                        [yLeftAxisScaleFactor]="yLeftAxisScale"
+                        [yRightAxisScaleFactor]="yRightAxisScale"
+                        [yRightAxisTickFormatting]="yRightTickFormat"
+                        [gradient]="gradient"
+                        [xAxis]="showXAxis"
+                        [yAxis]="showYAxis"
+                        [legend]="showLegend"
+                        [legendTitle]="legendTitle"
+                        [showGridLines]="showGridLines"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [showRightYAxisLabel]="showYAxisLabel"
+                        [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel"
+                        [yAxisLabelRight]="yAxisLabelRight"
+                        (select)="onSelect($event)">
+                </app-combo-chart-component>
+            </div>
+        </mat-card>
+    </div>
+    <!--<div *ngIf="dataVal?.length >= 12" fxFlex="50" class="flex-p">
+        <mat-card>
+            <mat-card-header fxLayoutAlign="center center">
+                <mat-card-subtitle><h2>Taux de réalisation / valorisation</h2></mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-300p">
+                <ngx-charts-area-chart-normalized
+                        [scheme]="colorScheme"
+                        [results]="taux"
+                        [gradient]="gradient"
+                        [xAxis]="showXAxis"
+                        [yAxis]="showYAxis"
+                        [legend]="showLegend"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel"
+                        (select)="onSelect($event)">
+
+       </ngx-charts-area-chart-normalized>
+            </div>
+        </mat-card>
+    </div>-->
+</div>

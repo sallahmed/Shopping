@@ -1,0 +1,393 @@
+<div fxLayout="column" fxLayout.gt-sm="row wrap">
+    <div fxFlex="100" class="flex-p" fxLayoutAlign="center center">
+        <form [formGroup]="form" class="reporting-financier-form">
+            <div fxLayout="row" fxLayoutGap="20px">
+                <div *ngIf="view_filter" formGroupName="entite">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Choisir une entité" formControlName="id" (change)="onChange(Entite.value)" #Entite ngModel name="entite" [(value)]="selected" required>
+                        <!--mat-select placeholder="Choisir une entité" formControlName="id" (selectionChange)="onChange(Entite.value)" #Entite ngModel name="entite" [(value)]="selected" required-->
+                            <mat-option value="groupe">Groupe Sonatel</mat-option>
+                            <mat-option *ngFor="let ent of entites" [value]="ent.id">
+                                {{ent.libelle}}
+                            </mat-option>
+                        </mat-select>
+                  </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'title.exerciseyear'| translate}}" formControlName="annee" #Annee ngModel name="Annee" required>
+                            <mat-option value="">-- {{'title.nochoice'| translate}}s --</mat-option>
+                            <mat-option *ngFor="let an of annees" [value]="an.annee">
+                                {{an.annee}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="end">
+                    <button mat-mini-fab color="primary" (click)="search_financier(selected,Annee.value)">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                </div>
+                <div *ngIf="data?.length >= 1" fxLayoutAlign="end">
+                    <button mat-raised-button pull-right color="accent" (click)="exportAsExcel()">
+                        <mat-icon>get_app</mat-icon>{{'buton.export'| translate}}
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+                <mat-spinner [diameter]="40" color="primary"></mat-spinner>
+            </div>
+        </form>
+    </div>
+    <div fxFlex="100" class="flex-p" *ngIf="data">
+        <mat-card>
+            <!--mat-card-header fxLayoutAlign="center center">
+                <mat-card-subtitle><h2>Reporting Financier</h2></mat-card-subtitle>
+            </mat-card-header-->
+            <mat-card-content>
+                <mat-tab-group>
+                    <!-- SYNTHESE GLOBALE -->
+                    <mat-tab label="{{'financier.synth'| translate}}">
+                        <p class="py-1">{{'title.financierlbl'| translate}}</p>
+                        <table #table class="synthese mat-elevation-z8">
+                            <tr>
+                                <th class="first">{{'financier.millecfa'| translate}}</th>
+                                <th>{{'month.jan'| translate}}</th>
+                                <th>{{'month.feb'| translate}}</th>
+                                <th>{{'month.mar'| translate}}</th>
+                                <th>{{'month.apr'| translate}}</th>
+                                <th>{{'month.may'| translate}}</th>
+                                <th>{{'month.jun'| translate}}</th>
+                                <th>{{'month.jul'| translate}}</th>
+                                <th>{{'month.aug'| translate}}</th>
+                                <th>{{'month.sept'| translate}}</th>
+                                <th>{{'month.oct'| translate}}</th>
+                                <th>{{'month.nov'| translate}}</th>
+                                <th>{{'month.dec'| translate}}</th>
+                                <th>{{'title.year'| translate}}</th>
+                            </tr>
+
+                            <tr class="lost" *ngFor="let dt of data">
+                                <td class="lost first">Total "Loss"</td>
+                                <td class="lost" *ngFor="let mL of dt.month_loss">{{ mL }}</td>
+                                <td class="lost">{{ dt.loss_annuel }}</td>
+                            </tr>
+                            <tr class="lost" *ngFor="let dt of data">
+                                <td class="first">{{'financier.tauxca'| translate}}</td>
+                                <td *ngFor="let pL of dt.pourc_loss">{{ pL }} %</td>
+                                <td>{{ dt.moy_pour_loss }} %</td>
+                            </tr>
+                            <ng-container *ngFor="let dt of data">
+                                <tr *ngFor="let typC of dt.controles">
+                                    <td class="red first">{{ typC.label_loss_tc }}</td>
+                                    <td *ngFor="let lTC of typC.loss_tc">{{ lTC }}</td>
+                                    <td>{{ typC.loss_tc_annuel }}</td>
+                                </tr>
+                            </ng-container>
+                            <tr *ngFor="let dt of data">
+                                <td class="red first">{{'financier.pertedegrevt'| translate}}</td>
+                                <td *ngFor="let oL of dt.other_loss">{{ oL }}</td>
+                                <td>{{ dt.other_loss_annuel }}</td>
+                            </tr>
+                            <tr class="save" *ngFor="let dt of data">
+                                <td class="save first">Total "Savings"</td>
+                                <td class="save" *ngFor="let mS of dt.month_save">{{ mS }}</td>
+                                <td class="save">{{ dt.save_annuel }}</td>
+                            </tr>
+                            <tr class="save" *ngFor="let dt of data">
+                                <td class="first">{{'financier.tauxca'| translate}}</td>
+                                <td *ngFor="let pS of dt.pourc_save">{{ pS }} %</td>
+                                <td>{{ dt.moy_pour_save }} %</td>
+                            </tr>
+                            <ng-container *ngFor="let dt of data">
+                                <tr *ngFor="let typC of dt.controles">
+                                    <td class="green first">{{ typC.label_save_tc }}</td>
+                                    <td *ngFor="let sTC of typC.save_tc">{{ sTC }}</td>
+                                    <td>{{ typC.save_tc_annuel }}</td>
+                                </tr>
+                            </ng-container>
+                            <tr *ngFor="let dt of data">
+                                <td class="green first">{{'financier.carecup'| translate}}</td>
+                                <td *ngFor="let recouv of dt.recouvrement">{{ recouv }}</td>
+                                <td>{{ dt.recouv_annuel}}</td>
+                            </tr>
+                            <tr *ngFor="let dt of data">
+                                <td class="green first">{{'financier.pertestop'| translate}}</td>
+                                <td *ngFor="let pertS of dt.pertes_stop">{{ pertS }}</td>
+                                <td>{{ dt.pertesS_annuel}}</td>
+                            </tr>
+                            <tr *ngFor="let dt of data">
+                                <td class="green first">Sunshine initiatives</td>
+                                <td *ngFor="let sun of dt.sunshines">{{ sun }}</td>
+                                <td>{{ dt.sunshines_annuel}}</td>
+                            </tr>
+                        </table><br /><br />
+
+                        <div fxLayout="column" fxLayout.gt-sm="row wrap">
+                            <div *ngIf="pertes?.length >= 1" fxFlex="50" class="flex-p">
+                                <mat-card>
+                                    <mat-card-header fxLayoutAlign="center center">
+                                        <mat-card-subtitle><h2>{{'financier.repartpertesentite'| translate}}</h2></mat-card-subtitle>
+                                    </mat-card-header>
+                                    <div class="w-100 h-300p">
+                                        <ngx-charts-pie-chart
+                                            [scheme]="colorScheme"
+                                            [results]="pertes"
+                                            [legend]="showLegend"
+                                            [explodeSlices]="explodeSlices"
+                                            [labels]="showLabels"
+                                            [doughnut]="doughnut"
+                                            [gradient]="gradient"
+                                            (select)="onSelect($event)">
+                                        </ngx-charts-pie-chart>
+                                    </div>
+                                </mat-card>
+                            </div>
+                            <div *ngIf="pour_ca_total?.length >= 1" fxFlex="50" class="flex-p">
+                                <mat-card>
+                                    <mat-card-header fxLayoutAlign="center center">
+                                        <mat-card-subtitle><h2>% CA Total</h2></mat-card-subtitle>
+                                    </mat-card-header>
+                                    <div class="w-100 h-300p">
+                                        <ngx-charts-bar-vertical
+                                            [scheme]="colorScheme"
+                                            [gradient]="gradient"
+                                            [xAxis]="showXAxis"
+                                            [yAxis]="showYAxis"
+                                            [legend]="showLegend"
+                                            [showXAxisLabel]="showXAxisLabel"
+                                            [showYAxisLabel]="showYAxisLabel"
+                                            [yAxisLabel]="yAxisLabelCA"
+                                            [results]="pour_ca_total"
+                                            (select)="onSelect($event)">
+                                        </ngx-charts-bar-vertical>
+                                    </div>
+                                </mat-card>
+                            </div>
+                            <div *ngIf="typologies_pertes?.length >= 1" fxFlex="50" class="flex-p">
+                                <mat-card>
+                                    <mat-card-header fxLayoutAlign="center center">
+                                        <mat-card-subtitle><h2>{{'financier.typologyperte'| translate}}</h2></mat-card-subtitle>
+                                    </mat-card-header>
+                                    <div class="w-100 h-300p">
+                                        <ngx-charts-bar-vertical
+                                            [scheme]="colorScheme"
+                                            [gradient]="gradient"
+                                            [xAxis]="showXAxis"
+                                            [yAxis]="showYAxis"
+                                            [legend]="showLegend"
+                                            [showXAxisLabel]="showXAxisLabel"
+                                            [showYAxisLabel]="showYAxisLabel"
+                                            [yAxisLabel]="yAxisLabelTypo"
+                                            [results]="typologies_pertes"
+                                            (select)="onSelect($event)">
+                                        </ngx-charts-bar-vertical>
+                                    </div>
+                                </mat-card>
+                            </div>
+                            <div *ngIf="typologies_gains?.length >= 1" fxFlex="50" class="flex-p">
+                                <mat-card>
+                                    <mat-card-header fxLayoutAlign="center center">
+                                        <mat-card-subtitle><h2>{{'financier.typologygain'| translate}}</h2></mat-card-subtitle>
+                                    </mat-card-header>
+                                    <div class="w-100 h-300p">
+                                        <ngx-charts-bar-vertical
+                                            [scheme]="colorScheme"
+                                            [gradient]="gradient"
+                                            [xAxis]="showXAxis"
+                                            [yAxis]="showYAxis"
+                                            [legend]="showLegend"
+                                            [showXAxisLabel]="showXAxisLabel"
+                                            [showYAxisLabel]="showYAxisLabel"
+                                            [yAxisLabel]="yAxisLabelTypo"
+                                            [results]="typologies_gains"
+                                            (select)="onSelect($event)">
+                                        </ngx-charts-bar-vertical>
+                                    </div>
+                                </mat-card>
+                            </div>
+                            <div *ngIf="taux_sauves?.length >= 1 && taux_pertes?.length >=1" fxFlex="100" class="flex-p">
+                                <mat-card>
+                                    <mat-card-header fxLayoutAlign="center center">
+                                        <mat-card-subtitle><h2>{{'financier.perterevenu'| translate}}</h2></mat-card-subtitle>
+                                    </mat-card-header>
+                                    <div class="w-100 h-300p">
+                                        <app-combo-chart-component
+                                            *ngIf="chartType === 'combo-chart'"
+                                            class="chart-container"
+                                            [view]="view"
+                                            [scheme]="comboBarScheme"
+                                            [colorSchemeLine]="lineChartScheme"
+                                            [results]="taux_sauves"
+                                            [lineChart]="taux_pertes"
+                                            [tooltipDisabled]="tooltipDisabled"
+                                            [yAxisTickFormatting]="yLeftTickFormat"
+                                            [yLeftAxisScaleFactor]="yLeftAxisScale"
+                                            [yRightAxisScaleFactor]="yRightAxisScale"
+                                            [yRightAxisTickFormatting]="yRightTickFormat"
+                                            [gradient]="gradient"
+                                            [xAxis]="showXAxis"
+                                            [yAxis]="showYAxis"
+                                            [legend]="showLegend"
+                                            [legendTitle]="legendTitle"
+                                            [showGridLines]="showGridLines"
+                                            [showXAxisLabel]="showXAxisLabel"
+                                            [showYAxisLabel]="showYAxisLabel"
+                                            [showRightYAxisLabel]="showYAxisLabel"
+                                            [yAxisLabel]="yAxisLabel"
+                                            [yAxisLabelRight]="yAxisLabelRight"
+                                            (select)="onSelect($event)">
+                                        </app-combo-chart-component>
+                                    </div>
+                                </mat-card>
+                            </div>
+                        </div>
+                    </mat-tab>
+
+                    <!-- SYNTHESE DETAILLEE -->
+                    <mat-tab label="{{'financier.synthdet'| translate}}">
+                        <p class="py-1">{{'title.financierdetail'| translate}}</p>
+                        <table #table_detail class="synthese-detail mat-elevation-z8" >
+                            <tr><th class="first">{{'financier.millecfa'| translate}}</th><th>{{'month.jan'| translate}}</th><th>{{'month.feb'| translate}}</th><th>{{'month.mar'| translate}}</th><th>{{'month.apr'| translate}}</th><th>{{'month.may'| translate}}</th><th>{{'month.jun'| translate}}</th><th>{{'month.jul'| translate}}</th><th>{{'month.aug'| translate}}</th><th>{{'month.sept'| translate}}</th><th>{{'month.oct'| translate}}</th><th>{{'month.nov'| translate}}</th><th>{{'month.dec'| translate}}</th><th>{{'title.annual'| translate}}</th></tr>
+
+                            <tr class="lost" *ngFor="let dt of data">
+                                <td class="lost first">Total "Loss"</td>
+                                <td class="lost" *ngFor="let mL of dt.month_loss">{{ mL }}</td>
+                                <td class="lost">{{ dt.loss_annuel }}</td>
+                            </tr>
+                            <tr class="lost" *ngFor="let dt of data">
+                                <td class="first">{{'financier.tauxca'| translate}}</td>
+                                <td *ngFor="let pL of dt.pourc_loss">{{ pL }} %</td>
+                                <td>{{ dt.moy_pour_loss }} %</td>
+                            </tr>
+                            <ng-container *ngFor="let dt of data">
+                                <ng-container *ngFor="let typC of dt.controles">
+                                    <tr>
+                                        <td class="red first">{{ typC.label_loss_tc }}</td>
+                                        <td class="red" *ngFor="let lTC of typC.loss_tc">{{ lTC }}</td>
+                                        <td>{{ typC.loss_tc_annuel }}</td>
+                                    </tr>
+                                    <tr *ngFor="let act of typC.activites">
+                                        <td class="first">{{ act.libelle }}</td>
+                                        <td *ngFor="let lAC of act.loss_ac">{{ lAC }}</td>
+                                        <td>{{ act.loss_ac_annuel }}</td>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+                            <tr *ngFor="let dt of data">
+                                <td class="red first">{{'financier.pertedegrevt'| translate}}</td>
+                                <td *ngFor="let oL of dt.other_loss">{{ oL }}</td>
+                                <td>{{ dt.other_loss_annuel }}</td>
+                            </tr>
+                            <tr class="save" *ngFor="let dt of data">
+                                <td class="save first">Total "Savings"</td>
+                                <td class="save" *ngFor="let mS of dt.month_save">{{ mS }}</td>
+                                <td class="save">{{ dt.save_annuel }}</td>
+                            </tr>
+                            <tr class="save" *ngFor="let dt of data">
+                                <td class="first">{{'financier.tauxca'| translate}}</td>
+                                <td *ngFor="let pS of dt.pourc_save">{{ pS }} %</td>
+                                <td>{{ dt.moy_pour_save }} %</td>
+                            </tr>
+                            <ng-container *ngFor="let dt of data">
+                                <ng-container *ngFor="let typC of dt.controles">
+                                    <tr>
+                                        <td class="green first">{{ typC.label_save_tc }}</td>
+                                        <td class="green" *ngFor="let sTC of typC.save_tc">{{ sTC }}</td>
+                                        <td>{{ typC.save_tc_annuel }}</td>
+                                    </tr>
+                                    <tr *ngFor="let act of typC.activites">
+                                        <td class="first">{{ act.libelle }}</td>
+                                        <td *ngFor="let sAC of act.save_ac">{{ sAC }}</td>
+                                        <td>{{ act.save_ac_annuel }}</td>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+                            <tr *ngFor="let dt of data">
+                                <td class="green first">{{'financier.carecup'| translate}}</td>
+                                <td *ngFor="let recouv of dt.recouvrement">{{ recouv }}</td>
+                                <td>{{ dt.recouv_annuel}}</td>
+                            </tr>
+                            <tr *ngFor="let dt of data">
+                                <td class="green first">{{'financier.pertestop'| translate}}</td>
+                                <td *ngFor="let pertS of dt.pertes_stop">{{ pertS }}</td>
+                                <td>{{ dt.pertesS_annuel}}</td>
+                            </tr>
+                            <tr *ngFor="let dt of data">
+                                <td class="green first">Sunshine initiatives</td>
+                                <td *ngFor="let sun of dt.sunshines">{{ sun }}</td>
+                                <td>{{ dt.sunshines_annuel}}</td>
+                            </tr>
+                        </table><br /><br />
+
+                        <div fxLayout="column" fxLayout.gt-sm="row wrap">
+                            <div *ngIf="sources_pertes?.length >= 1" fxFlex="100" class="flex-p">
+                                <mat-card>
+                                    <mat-card-header fxLayoutAlign="center center">
+                                        <mat-card-subtitle><h2>{{'financier.sourcepertes'| translate}}</h2></mat-card-subtitle>
+                                    </mat-card-header>
+                                    <div class="w-100 h-300p">
+                                        <ngx-charts-bar-vertical
+                                            [scheme]="colorScheme"
+                                            [gradient]="gradient"
+                                            [xAxis]="showXAxis"
+                                            [yAxis]="showYAxis"
+                                            [legend]="showLegend"
+                                            [showXAxisLabel]="showXAxisLabel"
+                                            [showYAxisLabel]="showYAxisLabel"
+                                            [yAxisLabel]="yAxisLabelCA"
+                                            [results]="sources_pertes"
+                                            (select)="onSelect($event)">
+                                        </ngx-charts-bar-vertical>
+                                    </div>
+                                </mat-card>
+                            </div>
+                            <div *ngIf="sources_pertes_ra?.length >= 1" fxFlex="50" class="flex-p">
+                                <mat-card>
+                                    <mat-card-header fxLayoutAlign="center center">
+                                        <mat-card-subtitle><h2>{{'financier.sourcepertes'| translate}} RA</h2></mat-card-subtitle>
+                                    </mat-card-header>
+                                    <div class="w-100 h-300p">
+                                        <ngx-charts-bar-vertical
+                                            [scheme]="colorScheme"
+                                            [gradient]="gradient"
+                                            [xAxis]="showXAxis"
+                                            [yAxis]="showYAxis"
+                                            [legend]="showLegend"
+                                            [showXAxisLabel]="showXAxisLabel"
+                                            [showYAxisLabel]="showYAxisLabel"
+                                            [yAxisLabel]="yAxisLabelCA"
+                                            [results]="sources_pertes_ra"
+                                            (select)="onSelect($event)">
+                                        </ngx-charts-bar-vertical>
+                                    </div>
+                                </mat-card>
+                            </div>
+                            <div *ngIf="sources_pertes_fra?.length >= 1" fxFlex="50" class="flex-p">
+                                <mat-card>
+                                    <mat-card-header fxLayoutAlign="center center">
+                                        <mat-card-subtitle><h2>{{'financier.sourcepertes'| translate}} FRA</h2></mat-card-subtitle>
+                                    </mat-card-header>
+                                    <div class="w-100 h-300p">
+                                        <ngx-charts-bar-vertical
+                                            [scheme]="colorScheme"
+                                            [gradient]="gradient"
+                                            [xAxis]="showXAxis"
+                                            [yAxis]="showYAxis"
+                                            [legend]="showLegend"
+                                            [showXAxisLabel]="showXAxisLabel"
+                                            [showYAxisLabel]="showYAxisLabel"
+                                            [yAxisLabel]="yAxisLabelCA"
+                                            [results]="sources_pertes_fra"
+                                            (select)="onSelect($event)">
+                                        </ngx-charts-bar-vertical>
+                                    </div>
+                                </mat-card>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

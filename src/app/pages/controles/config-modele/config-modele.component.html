@@ -1,0 +1,157 @@
+<h1 fxLayoutAlign="center"><span>Paramétrage du modèle pour le contôle {{ controle.libelle }} </span></h1>
+<div>
+    <form [formGroup]="firstFormGroup" class="config-modele-form">
+        <div fxLayout="row" fxLayoutAlign="center">
+            <mat-form-field class="w-50">
+                <mat-placeholder><mat-icon>poll</mat-icon>Nombre de champs</mat-placeholder>
+                <input matInput type="number" min="5" max="50" formControlName="nombre">
+            </mat-form-field>
+            <button mat-raised-button color="accent" (click)="executer(firstFormGroup.value)" [disabled]="!firstFormGroup.valid">Exécuter</button>
+        </div>
+    </form>
+</div>
+<div *ngIf="nbreChamps" >
+    <form [formGroup]="secondFormGroup" class="config-modele-form">
+        <div fxLayout="row" fxLayoutAlign="center">
+            <mat-form-field class="w-100">
+                <mat-placeholder><mat-icon>poll</mat-icon>Numero de début du fichier</mat-placeholder>
+                <input matInput type="number" min="0" formControlName="numDebut">
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" formArrayName="champs" *ngIf="arrChamps.length == nbreChamps ">
+            <div fxFlex="50" class="flex-p">
+                <mat-card >
+                    <mat-card-header>
+                        <mat-card-title>Champs obligatoires</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <!--<div fxLayout="row" *ngFor="let nb of counter(5); let i = index ">
+                                <select placeholder="Colonne" [(ngModel)]="select[i]" [ngModelOptions]="{standalone: true}">
+                                    <option *ngFor="let col of colonnes | slice:0:nbreChamps | exclude:select:select[i]:col; let i = index" [value]="col">{{col}}</option>
+                                </select>
+                                <input type="text" placeholder="Libelle" size="45">
+                        </div>-->
+                        <div fxLayout="row" fxLayout="row" fxLayoutGap="10px" [formGroupName]="0">
+                            <mat-form-field class="w-50">
+                                <mat-select placeholder="Colonne" formControlName="colonne" [(ngModel)]="select[0]" name="colonne" required>
+                                    <mat-option *ngFor="let col of colonnes | slice:0:nbreChamps | exclude:select:select[0]:col; let i = index" [value]="col">{{col}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="w-100">
+                                <input matInput formControlName="libelle" type="text" placeholder="Risques de pertes" size="45" required>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="row" fxLayout="row" fxLayoutGap="10px" [formGroupName]="1">
+                            <mat-form-field class="w-50">
+                                <mat-select placeholder="Colonne" formControlName="colonne" [(ngModel)]="select[1]" required>
+                                    <mat-option *ngFor="let col of colonnes | slice:0:nbreChamps | exclude:select:select[1]:col; let i = index" [value]="col">{{col}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="w-100">
+                                <input matInput formControlName="libelle" type="text" placeholder="Pertes" size="45" required>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="row" fxLayout="row" fxLayoutGap="10px" [formGroupName]="2">
+                            <mat-form-field  class="w-50">
+                                <mat-select placeholder="Colonne" formControlName="colonne" [(ngModel)]="select[2]" required>
+                                    <mat-option *ngFor="let col of colonnes | slice:0:nbreChamps | exclude:select:select[2]:col; let i = index" [value]="col">{{col}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="w-100">
+                                <input matInput formControlName="libelle" type="text" placeholder="Typologies pertes" size="45" required>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="row" fxLayout="row" fxLayoutGap="10px" [formGroupName]="3">
+                            <mat-form-field class="w-50">
+                                <mat-select placeholder="Colonne" formControlName="colonne" [(ngModel)]="select[3]" required>
+                                    <mat-option *ngFor="let col of colonnes | slice:0:nbreChamps | exclude:select:select[3]:col; let i = index" [value]="col">{{col}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="w-100">
+                                <input matInput formControlName="libelle" type="text" placeholder="Revenus sauvés" size="45" required>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="row" fxLayout="row" fxLayoutGap="10px" [formGroupName]="4">
+                            <mat-form-field class="w-50">
+                                <mat-select placeholder="Colonne" formControlName="colonne" [(ngModel)]="select[4]" required>
+                                    <mat-option *ngFor="let col of colonnes | slice:0:nbreChamps | exclude:select:select[4]:col; let i = index" [value]="col">{{col}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="w-100">
+                                <input matInput  formControlName="libelle" type="text" placeholder="Recouvrement" size="45" required>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="row" fxLayout="row" fxLayoutGap="10px" [formGroupName]="5">
+                            <mat-form-field class="w-50">
+                                <mat-select placeholder="Colonne" formControlName="colonne" [(ngModel)]="select[5]" required>
+                                    <mat-option *ngFor="let col of colonnes | slice:0:nbreChamps | exclude:select:select[5]:col; let i = index" [value]="col">{{col}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="w-100">
+                                <input matInput  formControlName="libelle" type="text" placeholder="Pertes stoppées" size="45" required>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="row" fxLayout="row" fxLayoutGap="10px" [formGroupName]="6">
+                            <mat-form-field class="w-50">
+                                <mat-select placeholder="Colonne" formControlName="colonne" [(ngModel)]="select[6]" required>
+                                    <mat-option *ngFor="let col of colonnes | slice:0:nbreChamps | exclude:select:select[6]:col; let i = index" [value]="col">{{col}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="w-100">
+                                <input matInput  formControlName="libelle" type="text" placeholder="Correction" size="45" required>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="row" fxLayout="row" fxLayoutGap="10px" [formGroupName]="7">
+                            <mat-form-field class="w-50">
+                                <mat-select placeholder="Colonne" formControlName="colonne" [(ngModel)]="select[7]" required>
+                                    <mat-option *ngFor="let col of colonnes | slice:0:nbreChamps | exclude:select:select[7]:col; let i = index" [value]="col">{{col}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="w-100">
+                                <input matInput  formControlName="libelle" type="text" placeholder="Date" size="45" required>
+                            </mat-form-field>
+                        </div>
+                    </mat-card-content>
+                    <mat-card-actions>
+                        <button mat-raised-button color="accent" (click)="save(secondFormGroup.value)" [disabled]="!secondFormGroup.valid">Enregistrer</button>
+                    </mat-card-actions>
+                    <!--debug information:
+                    fields.option1: {{select[1]}}
+                    fields.option2: {{select[2]}}-->
+                </mat-card>
+            </div>
+            <div fxFlex="50" class="flex-p">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>Champs supplémentaires</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div  *ngFor="let nb of counter(nbreChamps)| slice:8; let i = index">
+                            <!--<div  *ngFor="let item of secondFormGroup.get('champs').controls| slice:6; let i = index">!-->
+                                <div fxLayout="row" fxLayoutGap="10px" [formGroupName]="i+8">
+                                <!--<select placeholder="Colonne" [(ngModel)]="select[i+5]" [ngModelOptions]="{standalone: true}">-->
+                                <mat-form-field  class="w-50">
+                                    <mat-select placeholder="Colonne" formControlName="colonne" [(ngModel)]="select[i+8]"  required>
+                                        <!--<mat-option  *ngFor="let col of colonnes| slice:6:nbreChamps | exclude:select:select[i+6]:col; let i = index" [value]="col">{{col}}</mat-option>-->
+                                        <mat-option *ngFor="let col of colonnes | slice:0:nbreChamps | exclude:select:select[i+8]:col; let i = index" [value]="col">{{col}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field  class="w-100">
+                                    <mat-placeholder><mat-icon>poll</mat-icon>Libellé</mat-placeholder>
+                                    <input matInput formControlName="libelle" type="text"   size="45" required>
+                                </mat-form-field>
+                                <!--<input matInput type="text" placeholder="Libelle" formControlName="libelle" size="45">-->
+                            </div>
+                            <!--Chosen name: {{ secondFormGroup.controls.champs.controls[i+5].controls.colonne.value }}-->
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+    <mat-spinner color="primary"></mat-spinner>
+</div>

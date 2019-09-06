@@ -1,0 +1,205 @@
+<h1><span *ngIf="!controle.id">{{'title.add'| translate}}</span><span *ngIf="controle.id">{{'title.edit'| translate}}</span> {{'control.title'| translate}}</h1>
+<div>
+    <form [formGroup]="form" class="new-controle-form">
+        <mat-tab-group class="horizontal-tabs" dynamicHeight>
+            <mat-tab label="{{'control.general'| translate}}">
+                <div fxLayout="row" fxLayoutGap="10px" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>poll</mat-icon>{{'control.libelle'| translate}}</mat-placeholder>
+                        <input matInput formControlName="libelle" required>
+                        <mat-error *ngIf="form.controls.libelle.errors?.required">Le libellé est obligatoire</mat-error>
+                        <mat-error *ngIf="form.controls.libelle.hasError('minlength')">Minimum 6 caractères</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'control.priorite'| translate}}" formControlName="priorite" required>
+                            <mat-option [value]="1">1</mat-option>
+                            <mat-option [value]="2">2</mat-option>
+                            <mat-option [value]="3">3</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <!--<mat-form-field class="w-100">
+                        <mat-select placeholder="Maturité" formControlName="maturite" required>
+                            <mat-option [value]="1">Maitrisé<img  src="assets/img/emojis/ok.png" class="transition-2"></mat-option>
+                            <mat-option [value]="2">Non Maitrisé<img  src="assets/img/emojis/no.png" class="transition-2"></mat-option>
+                            <mat-option [value]="3">Non évalué<img  src="assets/img/emojis/nok.png" class="transition-2"></mat-option>
+                        </mat-select>
+                    </mat-form-field>-->
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>blur_linear</mat-icon>{{'control.risk'| translate}}</mat-placeholder>
+                        <input matInput formControlName="risque_identifie" required>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>grain</mat-icon>{{'control.eval'| translate}}</mat-placeholder>
+                        <input matInput formControlName="qualification_risque">
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <!--<input matInput [matDatepicker]="date_demarrage" placeholder="Date de démarrage" formControlName="date_demarrage">
+                        <mat-datepicker-toggle matSuffix [for]="date_demarrage"></mat-datepicker-toggle>
+                        <mat-datepicker #date_demarrage></mat-datepicker>-->
+                        <input matInput type="date" placeholder="{{'control.date'| translate}}"  formControlName="date_demarrage">
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutGap="10px" class="form-field-outer">
+                    <input type="file" id="template" (change)="onSelectFile($event)" #fileInput style="display: none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                    <mat-form-field class="w-100" formGroupName="template">
+                        <!--<mat-placeholder><mat-icon>texture</mat-icon>Template</mat-placeholder>
+                        <input matInput type="file" formControlName="template"  accept="application/vnd.ms-excel">-->
+                        <input matInput formControlName="filename" placeholder="Template" readonly required>
+                        <mat-error *ngIf="form.controls.template.hasError('invalidExcelFileExtention')">Ce type de fichier n'est pas accepté ici</mat-error>
+                    </mat-form-field>
+                    <button mat-button (click)="selectFile()"> <mat-icon>file_upload</mat-icon></button>
+                    <mat-checkbox placeholder="Top groupe" formControlName="ctg">Top groupe</mat-checkbox>
+                </div>
+
+
+                <mat-form-field class="w-100">
+                    <mat-placeholder><mat-icon>texture</mat-icon>{{'control.description'| translate}}</mat-placeholder>
+                    <input matInput formControlName="description" required>
+                </mat-form-field>
+            </mat-tab>
+            <mat-tab label="{{'menu.typectrl'| translate}}" formGroupName="type_controle">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.typectrl'| translate}}" formControlName="id" required>
+                            <mat-option *ngFor="let tpCtrl of listTypeControle" [value]="tpCtrl.id">
+                                {{tpCtrl.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="{{'menu.domain'| translate}}">
+                <div fxLayout="row" fxLayoutGap="10px" class="form-field-outer" >
+                    <mat-form-field class="w-100" formGroupName="domaine">
+                        <mat-select placeholder="{{'menu.domain'| translate}}" formControlName="id"  required>
+                            <mat-option *ngFor="let domaine of listDomaine" (click)="getDomaine($event, domaine)" [value]="domaine.id">
+                                {{domaine.libelle}}
+                            </mat-option>
+                        </mat-select>
+                        <!--<tree-select name="simpleSelect"  formControlName="id"
+                                     [items]="listDomaine"
+                                     idField="id"
+                                     textField="libelle"
+                                     childrenField="children"
+                                     required=true
+                                     [filterPlaceholder]="FilterPlaceholder"
+                                     [allowFilter]="ShowFilter"
+                                     [allowParentSelection]="AllowParentSelection"
+                                     >
+                        </tree-select>-->
+                    </mat-form-field>
+                    <mat-form-field class="w-100" formGroupName="sous_domaine">
+                        <mat-select placeholder="{{'menu.subdomain'| translate}}" [(ngModel)]="selected" formControlName="id">
+                            <mat-option value="null" >Aucun choix</mat-option>
+                            <mat-option *ngFor="let domaine of sousDomaines" [value]="domaine.id">
+                                {{domaine.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <!--<mat-tab label="Sous domaine" formGroupName="sous_domaine">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Sous domaine" formControlName="id" required>
+                            <mat-option *ngFor="let domaine of listDomaine" [value]="domaine.id">
+                                {{domaine.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>-->
+            <mat-tab label="{{'menu.act'| translate}}" formGroupName="activite">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.act'| translate}}" formControlName="id">
+                            <mat-option *ngFor="let activite of listActivite" [value]="activite.id">
+                                {{activite.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="{{'menu.traf'| translate}}" formGroupName="type_trafic">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.traf'| translate}}" formControlName="id">
+                            <mat-option *ngFor="let tpTfc of listTypeTrafic" [value]="tpTfc.id">
+                                {{tpTfc.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <!--<mat-tab label="{{'menu.flux'| translate}}" formGroupName="flux">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.flux'| translate}}" formControlName="id">
+                            <mat-option *ngFor="let flux of listFlux" [value]="flux.id">
+                                {{flux.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>-->
+            <mat-tab label="{{'menu.flux'| translate}}" formGroupName="flux">
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="form-field-outer" *ngFor="let flux of listFlux">
+                    <mat-checkbox class="form-flux" (change)="onChange($event)" [value]="flux.id">{{flux.libelle}}</mat-checkbox>
+                </div>
+            </mat-tab>
+            <mat-tab label="{{'menu.period'| translate}}" formGroupName="periodicite">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.period'| translate}}" formControlName="id" required>
+                            <mat-option *ngFor="let per of listPeriodicite" [value]="per.id">
+                                {{per.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="{{'menu.method'| translate}}" formGroupName="methode_controle">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.method'| translate}}" formControlName="id">
+                            <mat-option *ngFor="let methode of listMethodeControle" [value]="methode.id">
+                                {{methode.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="{{'menu.outil'| translate}}" formGroupName="outil">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.outil'| translate}}" formControlName="id">
+                            <mat-option *ngFor="let outil of listOutil" [value]="outil.id">
+                                {{outil.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="{{'menu.cover'| translate}}" formGroupName="couverture_controle">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'menu.cover'| translate}}" formControlName="id">
+                            <mat-option *ngFor="let couverture of listCouvertureControle" [value]="couverture.id">
+                                {{couverture.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </form>
+    <!--<span *ngIf="isSavingError" class="red-text center error-message">{{ lblMessage }}</span>-->
+</div>
+<div  fxLayout="row" fxLayoutAlign="space-between center">
+    <button mat-raised-button color="accent" (click)="saveControle(form.value)" [disabled]="!form.valid"><span *ngIf="!controle.id">{{'buton.ok'| translate}}</span><span *ngIf="controle.id">{{'buton.edit'| translate}}</span></button>
+    <button mat-raised-button color="warn" (click)="close()">{{'buton.no'| translate}}</button>
+</div>
+
+<div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+    <mat-spinner color="primary"></mat-spinner>
+</div>

@@ -1,0 +1,28 @@
+<h1 mat-dialog-title><span *ngIf="!flux.id">{{'title.add'| translate}}</span><span *ngIf="flux.id">{{'title.edit'| translate}}</span> {{'menu.flux'| translate}}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form" class="flux-form">
+        <mat-tab-group class="vertical-tabs">
+            <mat-tab label="Général">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>texture</mat-icon>{{'title.libelle'| translate}}</mat-placeholder>
+                        <input matInput formControlName="libelle" required>
+                        <mat-error *ngIf="form.controls.libelle.errors?.required">{{'title.libellewarn'| translate}}</mat-error>
+                        <mat-error *ngIf="form.controls.libelle.hasError('minlength')">{{'title.min'| translate}}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>poll</mat-icon>Code</mat-placeholder>
+                        <input matInput formControlName="code">
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </form>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center">
+    <button mat-raised-button color="accent" (click)="save(form.value)" [disabled]="!form.valid"><span *ngIf="!flux.id">{{'buton.ok'| translate}}</span><span *ngIf="flux.id">{{'buton.edit'| translate}}</span></button>
+    <button mat-raised-button color="warn" (click)="close()">{{'buton.no'| translate}}</button>
+</div>
+<div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+    <mat-spinner color="primary"></mat-spinner>
+</div>

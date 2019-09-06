@@ -1,0 +1,178 @@
+<h1 mat-dialog-title fxLayoutAlign="center center">{{'title.diffusion'| translate}}</h1>
+<div mat-dialog-content>
+    <mat-tab-group class="horizontal-tabs">
+        <mat-tab label="{{'title.diffusionperiod'| translate}}">
+            <form [formGroup]="firstFormGroup" class="diffusion-porteur-form">
+                <div fxLayout="row" fxLayoutGap="5px">
+                    <div >
+                        <mat-form-field class="w-100" formGroupName="year">
+                            <mat-select placeholder="{{'title.year'| translate}}" formControlName="annee"  required>
+                                <mat-option *ngFor="let an of annees" [value]="an.annee">
+                                    {{an.annee}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <mat-form-field class="w-100" formGroupName="periodicite">
+                            <mat-select placeholder="{{'title.period'| translate}}" formControlName="id" required>
+                                <mat-option *ngFor="let periode of periodes" [value]="periode.id">
+                                    {{periode.libelle}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div >
+                </div>
+                <div  fxLayout="row" fxLayoutAlign="space-evenly">
+                    <button mat-raised-button color="accent" (click)="continuerPeriode(firstFormGroup.value)" [disabled]="!firstFormGroup.valid">{{'buton.continue'| translate}}<mat-icon>forward</mat-icon></button>
+                    <button mat-raised-button color="primary" (click)="close()"><mat-icon>undo</mat-icon>{{'buton.no'| translate}}</button>
+                </div>
+            </form>
+            <div fxFlex="100" class="flex-p">
+                <div class="spinner-container" *ngIf="loadingIndicator">
+                    <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+                </div>
+                <mat-card *ngIf="data">
+                    <mat-card-header fxLayoutAlign="center center">
+                        <mat-card-subtitle><h2>{{'title.diffperiodlbl'| translate}} {{ periode }} {{ annee }}</h2></mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+                <table mat-table #table *ngIf="data" class="detail mat-elevation-z8" >
+                    <thead>
+                    <tr>
+                        <th scope="col">{{'title.listcontrol'| translate}}</th>
+                        <th scope="col">{{'control.entity'| translate}}</th>
+                        <th scope="col" *ngFor="let per of tabPeriodes">{{ per.libelle }}</th>
+                    </tr>
+                    </thead>
+                    <tbody *ngFor="let dt of data; let i = index">
+                        <tr>
+                            <td [attr.rowspan]="dt.controleFiliale.length">{{dt.libelle}}</td>
+                            <td>{{dt.controleFiliale['0']['filiale'].libelle}}</td>
+                            <td  *ngFor="let per of tabPeriodes; let i = index">
+                                 <span>
+
+                                <mat-chip-list>
+                                    <mat-chip *ngIf="dt.controleFiliale['0']['evaluation'+(i+1)]==='0' && dt.controleFiliale['0']['echeance'+(i+1)]==='0'" color="accent" selected="true" class="info-chip">
+                                        {{'title.done'| translate}}
+                                    </mat-chip>
+                                    <mat-chip *ngIf="dt.controleFiliale['0']['evaluation'+(i+1)]==='1' && dt.controleFiliale['0']['echeance'+(i+1)]==='0'" color="primary" selected="true" class="info-chip">
+                                        {{'title.notdone'| translate}}
+                                    </mat-chip>
+                                    <mat-chip *ngIf="dt.controleFiliale['0']['echeance'+(i+1)]==='1'" color="warn" selected="true" class="info-chip">
+                                        {{'title.notexp'| translate}}
+                                    </mat-chip>
+                                    <mat-chip *ngIf="dt.controleFiliale['0']['evaluation'+(i+1)]===2" selected="true" class="info-chip">
+                                        ND
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </span>
+                            </td>
+                        </tr>
+                            <tr *ngFor="let d of dt.controleFiliale | slice:1">
+                                <td *ngIf="d">{{d['filiale'].libelle}}</td>
+                                <td *ngFor="let per of tabPeriodes; let i = index">
+                                     <span *ngIf="d">
+                                        <mat-chip-list>
+                                            <mat-chip *ngIf="d['evaluation'+(i+1)]==='0' && d['echeance'+(i+1)]==='0'" color="accent" selected="true" class="info-chip">
+                                                {{'title.done'| translate}}
+                                            </mat-chip>
+                                            <mat-chip *ngIf="d['evaluation'+(i+1)]==='1' && d['echeance'+(i+1)]==='0'" color="primary" selected="true" class="info-chip">
+                                                {{'title.notdone'| translate}}
+                                            </mat-chip>
+                                            <mat-chip *ngIf="d['echeance'+(i+1)]==='1'" color="warn" selected="true" class="info-chip">
+                                                {{'title.notexp'| translate}
+                                            </mat-chip>
+                                            <mat-chip *ngIf="d['evaluation'+(i+1)]===2" selected="true" class="info-chip">
+                                                ND
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </span>
+                                </td>
+                            </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div fxFlex="100" class="flex-p" *ngIf="data && selectedEntite!='null'">
+                <table mat-table class="detail mat-elevation-z8" >
+                    <thead>
+                    <tr>
+                        <td scope="col"></td>
+                        <th scope="col">{{'control.entity'| translate}}</th>
+                        <th scope="col" *ngFor="let per of tabPeriodes">{{ per.libelle }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>% réalisation</td>
+                        <td>{{data['0'].controleFiliale['0']['filiale'].libelle}}</td>
+                        <td  *ngFor="let per of tabPeriodes; let i = index">{{data['0']['pourcentage'+(i+1)]}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </mat-tab>
+        <mat-tab label="{{'title.diffusionyear'| translate}}">
+            <form [formGroup]="secondFormGroup" class="param-diffusion-form">
+                <div fxLayout="row" fxLayoutGap="5px">
+                    <div >
+                        <mat-form-field class="w-100" formGroupName="year">
+                            <mat-select placeholder="Année" formControlName="annee"  required>
+                                <mat-option *ngFor="let an of annees" [value]="an.annee">
+                                    {{an.annee}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="space-evenly">
+                    <button mat-raised-button color="accent" (click)="continuerAnnuel(secondFormGroup.value)" [disabled]="!secondFormGroup.valid">{{'buton.continue'| translate}}<mat-icon>forward</mat-icon></button>
+                    <button mat-raised-button color="primary" (click)="close()"><mat-icon>undo</mat-icon>{{'buton.no'| translate}}</button>
+                </div>
+            </form>
+            <div fxFlex="100" class="flex-p">
+                <div class="spinner-container" *ngIf="loading">
+                    <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+                </div>
+                <mat-card *ngIf="dataSynthese">
+                    <mat-card-header fxLayoutAlign="center center">
+                        <mat-card-subtitle><h2>Diffusion de reporting annuel {{ anneeSynthese }}</h2></mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+                <table mat-table #table *ngIf="dataSynthese" class="detail mat-elevation-z8" >
+                    <thead>
+                    <tr>
+                        <th scope="col" >Liste des contrôles</th>
+                        <th scope="col">Entité</th>
+                        <th scope="col" *ngFor="let periode of periodes" >{{ periode.libelle }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let dt of dataSynthese">
+                        <td>{{dt.controle}}</td>
+                        <td>{{dt.entite}}</td>
+                        <td *ngFor="let per of periodes; let i = index"> <span >
+
+                                <mat-chip-list>
+                                    <mat-chip *ngIf="dt['evaluation'+per.id]==='0' &&  dt['echeance'+per.id]==='0'" color="accent" selected="true" class="info-chip">
+                                        Fait
+                                    </mat-chip>
+                                    <mat-chip *ngIf="dt['evaluation'+per.id]==='1' &&  dt['echeance'+per.id]==='0'" color="primary" selected="true" class="info-chip">
+                                        Non fait
+                                    </mat-chip>
+                                    <mat-chip *ngIf="dt['echeance'+per.id]==='1'" color="warn" selected="true" class="info-chip">
+                                        Non échu
+                                    </mat-chip>
+                                    <mat-chip *ngIf="dt['evaluation'+per.id]===2" selected="true" class="info-chip">
+                                        NA
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

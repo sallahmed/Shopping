@@ -1,0 +1,95 @@
+<div fxLayout="column">
+    <div class="flex-p">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-button-toggle-group #controls="matButtonToggleGroup">
+                <mat-button-toggle value="search">
+                    <mat-icon>search</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <form class="controle-search" [class.show]="controls.value == 'search'">
+            <mat-form-field class="user-search-input">
+                <input matInput placeholder="Search controle by libelle.." name="search">
+            </mat-form-field>
+        </form>
+        <div fxLayout="column" class="mat-elevation-z8">           
+            <mat-form-field class="p-1">
+                <input matInput placeholder="Type to filter the libelle column..." (keyup)="updateFilter($event)">
+            </mat-form-field>
+        </div>
+        <ngx-datatable
+            #table
+            class="material"
+            [headerHeight]="50"
+            [limit]="10"
+            [columnMode]="'force'"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [rows]="rows"
+            [loadingIndicator]="loadingIndicator"
+            [selected]="selected"
+            [selectionType]="'checkbox'">
+            <ngx-datatable-column
+                [width]="30"
+                [sortable]="false"
+                [canAutoResize]="false"
+                [draggable]="true"
+                [resizeable]="false"
+                [headerCheckboxable]="true"
+                [checkboxable]="true">
+            </ngx-datatable-column>
+
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>reference</span>
+                </ng-template>
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                  {{row.reference}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Type</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.type_controle.code}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="activite">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    {{value.libelle}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="libelle">
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                <span>
+                  {{value}}
+                </span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>{{'menu.period'| translate}}</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.periodicite.libelle}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="actions" prop="id">
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value" let-rowIndex="rowIndex">
+                    <a (click)="detailsControle(row);" matTooltip="{{'control.details'| translate}}">
+                        <mat-icon>visibility</mat-icon>
+                    </a>
+                    <a (click)="editControle(row);" matTooltip="{{'control.edit'| translate}}">
+                        <mat-icon>settings</mat-icon>
+                    </a>
+                    <a *ngIf="!viewFilter" (click)="configModele(row);" matTooltip="Paramétrer le modèle">
+                        <!--<mat-icon>present_to_all</mat-icon>-->
+                        <mat-icon>event_note</mat-icon>
+                    </a>
+                    <mat-slide-toggle  class="toggle-setting" name="activation" [checked]="false" [(ngModel)]="device[rowIndex]" (change)="onToggleChanged(row, $event, rowIndex)"><!--{{row.etat==0 ? 'Réactiver' : 'Désactiver'}}--></mat-slide-toggle>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>

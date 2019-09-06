@@ -1,0 +1,9 @@
+<div fxLayoutAlign="space-around" class="title colors" mat-dialog-title>{{data.title}}</div>
+<div class="msg" mat-dialog-content>
+    {{data.msg}}
+</div>
+<a href="#"></a>
+<mat-dialog-actions fxLayoutAlign="space-around">
+    <button mat-raised-button color="primary"  [mat-dialog-close]="false" class="colors">No</button>
+    <button mat-raised-button color="accent"  [mat-dialog-close]="true" class="colors">Yes</button>
+</mat-dialog-actions>

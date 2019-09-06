@@ -1,0 +1,25 @@
+<h1 mat-dialog-title><span>Détails du dysfonctionnement</span></h1>
+    <div mat-dialog-content *ngIf="dysfonctionnement.id">
+        <div><span><b>Libellé: </b>{{dysfonctionnement.libelle}}</span></div>
+        <div><span><b>Contrôle: </b>{{dysfonctionnement.controle}}</span></div>
+        <div><span><b>Porteur: </b>{{dysfonctionnement.porteur}}</span></div>
+        <div><span><b>Date début: </b>{{dysfonctionnement.dateDebut | date :  "dd/MM/y" }}</span></div>
+        <div><span><b>Date fin: </b>{{dysfonctionnement.dateFin | date :  "dd/MM/y" }}</span></div>
+        <div><span><b>Statut: </b><mat-chip-list>
+            <mat-chip *ngIf="dysfonctionnement.statut===0" color="primary" selected="true" class="info-chip">
+                Nouveau
+            </mat-chip>
+            <mat-chip *ngIf="dysfonctionnement.statut===1" color="accent" selected="true" class="info-chip">
+                Fait
+            </mat-chip>
+            <mat-chip *ngIf="dysfonctionnement.statut===2" color="accent" selected="true" class="info-chip">
+                Non fait
+            </mat-chip>
+            <mat-chip *ngIf="dysfonctionnement.statut===3" color="accent" selected="true" class="info-chip">
+                Soldé
+            </mat-chip>
+        </mat-chip-list></span></div>
+    </div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center">
+    <button mat-raised-button color="warn" (click)="close()">Annuler</button>
+</div>

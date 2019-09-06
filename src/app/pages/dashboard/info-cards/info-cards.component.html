@@ -1,0 +1,295 @@
+<div fxLayout="row wrap" #resizedDiv>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">Taux de réalisation</mat-card-subtitle>
+                <!--mat-chip-list>
+                    <mat-chip color="warn" selected="true" class="info-chip">
+                        <span *ngIf="tauxReal < 0"><mat-icon class="icon-sm">trending_down</mat-icon>{{tauxReal | number: '1.1'}}%</span>
+                        <span *ngIf="tauxReal >= 0"><mat-icon class="icon-sm">trending_up</mat-icon>{{tauxReal | number: '1.1'}}%</span>
+                    </mat-chip>
+                </mat-chip-list-->
+            </mat-card-header>
+            <div class="w-100 h-100p" *ngIf="dataReal">
+                <ngx-charts-bar-vertical
+                    [scheme]="colorScheme"
+                    [results]="dataReal"
+                    (select)="onSelect($event)">
+                </ngx-charts-bar-vertical>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">Taux de Pertes / CA</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p" *ngIf="pertesCA">
+                <ngx-charts-bar-vertical
+                    [scheme]="colorScheme"
+                    [results]="pertesCA"
+                    (select)="onSelect($event)">
+                </ngx-charts-bar-vertical>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">Typologie Pertes</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p" *ngIf="pertesParTypologie">
+                <ngx-charts-bar-vertical
+                    [scheme]="colorScheme"
+                    [results]="pertesParTypologie"
+                    (select)="onSelect($event)">
+                </ngx-charts-bar-vertical>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">% Revenus Sauvés</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p" *ngIf="sauvesCA">
+                <ngx-charts-bar-vertical
+                    [scheme]="colorScheme"
+                    [results]="sauvesCA"
+                    (select)="onSelect($event)">
+                </ngx-charts-bar-vertical>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">% Pertes par Entité</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-300p" #resizedDiv>
+                <ngx-charts-pie-chart *ngIf="pertesParEntite"
+                    [scheme]="colorScheme"
+                    [results]="pertesParEntite"
+                    [legend]="showLegend"
+                    [explodeSlices]="explodeSlices"
+                    [labels]="showLabels"
+                    [doughnut]="doughnut"
+                    [gradient]="gradient"
+                    (select)="onSelect($event)">
+                </ngx-charts-pie-chart>   
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">Evolution Pertes & Gains</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart *ngIf="pertes_gains"
+                    [scheme]="colorScheme"
+                    [results]="pertes_gains"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">% Contrôles valorisés</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-bar-vertical *ngIf="dataVal"
+                    [scheme]="colorScheme"
+                    [results]="dataVal"
+                    (select)="onSelect($event)">
+                </ngx-charts-bar-vertical>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">% Réalisation des Contrôles</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-bar-vertical *ngIf="dataReal"
+                    [scheme]="colorScheme"
+                    [results]="dataReal"
+                    (select)="onSelect($event)">
+                </ngx-charts-bar-vertical>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">% Prise en charge des écarts</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="customers"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">Délai de prise en charge des écarts</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="customers"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">% de maturité des contrôles</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="customers"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">% Pertes FRA / Pertes RA</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="customers"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">% Automatisation des Contrôles</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="customers"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">% Réalisation des Contrôles OM</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="customers"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">Evolution Pertes OM</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="customers"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">Typologie Revenus sauvés</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="customers"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+    <br /><br /><br />
+
+
+    
+    
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">Taux de Pertes</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="orders"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+    <!--div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">Taux de valorisation</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p" *ngIf="dataVal">
+                <ngx-charts-bar-vertical
+                        [scheme]="colorScheme"
+                        [results]="dataVal"
+                        (select)="onSelect($event)">
+                </ngx-charts-bar-vertical>
+            </div>
+        </mat-card>
+    </div-->
+    <div fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50" class="flex-p">
+        <mat-card class="p-0">
+            <mat-card-header class="p-1" fxLayoutAlign="space-between center">
+                <mat-card-subtitle class="m-0">Taux de régularité</mat-card-subtitle>
+            </mat-card-header>
+            <div class="w-100 h-100p">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="customers"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </mat-card>
+    </div>
+</div>

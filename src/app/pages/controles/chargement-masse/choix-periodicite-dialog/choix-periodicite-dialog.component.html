@@ -1,0 +1,88 @@
+<h1 mat-dialog-title fxLayoutAlign="center center">{{'title.massload'| translate}}</h1>
+<div mat-dialog-content>
+    <mat-card>
+        <mat-card-content>
+            <div class="">
+                <h4>{{'title.loadcons'| translate}}</h4>
+                <br />
+                <ul style="list-style-type:square">
+                    <li>{{'title.valcons'| translate}}
+                        <ul>
+                            <li>{{'title.textyp'| translate}}</li>
+                            <li>{{'title.textcorrect'| translate}}</li>
+                        </ul>
+                    </li>
+                    <li>{{'title.filltext'| translate}}</li>
+                </ul>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    <mat-horizontal-stepper linear="isLinear" #stepper>
+        <mat-step [stepControl]="firstFormGroup">
+            <form [formGroup]="firstFormGroup" class="choix-periodicite-form">
+                <ng-template matStepLabel>{{'menu.period'| translate}}</ng-template>
+                <div *ngIf="loadingIndicator">
+                    <span>{{'title.filegeneration'| translate}}</span>
+                    <mat-progress-bar [color]="accent" mode="query" value="40"></mat-progress-bar>
+                </div>
+                <div fxLayout="row" fxLayoutGap="5px">
+                    <mat-form-field class="w-100" formGroupName="periodicite">
+                        <mat-select placeholder="{{'menu.period'| translate}}"  formControlName="id" required>
+                            <!--<mat-option value="null" >Choisir la périodicité</mat-option>!-->
+                            <mat-option>{{'title.chooseperiod'| translate}}</mat-option>
+                            <mat-option *ngFor="let periodicite of lesPeriodicites" [value]="periodicite.id">{{ periodicite.libelle }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field class="w-25">
+                        <mat-select placeholder="{{'title.year'| translate}}" [(ngModel)]="selectedYear" (selectionChange)="onChange($event)" [ngModelOptions]="{standalone: true}" required>
+                            <mat-option *ngFor="let an of annees" [value]="an.annee">
+                                {{an.annee}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </div>
+
+                <div>
+                    <button mat-raised-button color="primary"(click)="generer(firstFormGroup.value, stepper)" [disabled]="!firstFormGroup.valid">{{'buton.generatefile'| translate}}</button>
+                    <!--<button mat-raised-button color="primary"(click)="generer(firstFormGroup.value, stepper)" [disabled]="!firstFormGroup.valid" matStepperNext>Générer fichier</button>!-->
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="secondFormGroup">
+            <form [formGroup]="secondFormGroup" class="choix-periodicite-form">
+                <ng-template matStepLabel>{{'title.loading'| translate}}</ng-template>
+                <div *ngIf="isSubmitted">
+                    <span>{{'title.fileloading'| translate}}</span>
+                    <mat-progress-bar [color]="accent" mode="query" value="40"></mat-progress-bar>
+                </div>
+                <div fxLayout="row" fxLayoutGap="2px" class="form-field-outer">
+                    <input type="file" id="template" (change)="onSelectFile($event)" #fileInput style="display: none" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                    <mat-form-field class="w-100" formGroupName="template">
+                        <input matInput formControlName="filename" placeholder="Template" readonly required>
+                        <mat-error *ngIf="secondFormGroup.controls.template.hasError('invalidExcelFileExtention')">{{'title.filerror'| translate}}</mat-error>
+                        <mat-error *ngIf="secondFormGroup.controls.template.errors?.required">{{'title.filewarn'| translate}}</mat-error>
+                    </mat-form-field>
+                    <button mat-button (click)="selectFile()"> <mat-icon>file_upload</mat-icon></button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" matStepperPrevious>{{'buton.no'| translate}}</button>
+                    <button mat-raised-button color="warn" (click)="stepper.reset()">{{'buton.reset'| translate}}</button>
+                    <button mat-raised-button color="accent" (click)="enregistrer(secondFormGroup.value)">{{'buton.ok'| translate}}</button>
+                </div>
+            </form>
+        </mat-step>
+        <!--<mat-step>
+            <ng-template matStepLabel>Charger</ng-template>
+            You are now done.
+            <div>
+                <button mat-raised-button color="primary" matStepperPrevious>Retour</button>
+                <button mat-raised-button color="warn" (click)="stepper.reset()">Reset</button>
+            </div>
+        </mat-step>-->
+    </mat-horizontal-stepper>
+</div>
+<!--<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-evenly">
+    <button mat-raised-button color="primary" [mat-dialog-close]="form.value" [disabled]="!form.valid"><span>Continuer</span></button>
+    <button mat-raised-button color="warn" (click)="close()">Annuler</button>
+</div>-->

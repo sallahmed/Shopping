@@ -1,0 +1,28 @@
+<h1 mat-dialog-title><span *ngIf="!typeStructure.id">Ajouter</span><span *ngIf="typeStructure.id">Modifier</span> un type de stucture</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form" class="type-structure-form">
+        <mat-tab-group class="vertical-tabs">
+            <mat-tab label="Général">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>texture</mat-icon> Libelle</mat-placeholder>
+                        <input matInput formControlName="libelle" required>
+                        <mat-error *ngIf="form.controls.libelle.errors?.required">Le libelle est obligatoire</mat-error>
+                        <mat-error *ngIf="form.controls.libelle.hasError('minlength')">Minimum 5 caractères</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>poll</mat-icon>Code</mat-placeholder>
+                        <input matInput formControlName="code">
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </form>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center">
+    <button mat-raised-button color="accent" (click)="save(form.value)" [disabled]="!form.valid"><span *ngIf="!typeStructure.id">Enregistrer</span><span *ngIf="typeStructure.id">Modifier</span></button>
+    <button mat-raised-button color="warn" (click)="close()">Annuler</button>
+</div>
+<div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+    <mat-spinner color="primary"></mat-spinner>
+</div>

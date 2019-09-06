@@ -1,0 +1,85 @@
+<h1><span >Saisir</span> le contrôle {{ controleFiliale.controle.libelle }} -  {{suivi.date_debut | date :  "dd/MM/y"}}</h1>
+<div>
+    <form [formGroup]="form" class="saisie-suivi-form">
+        <div fxLayout="row"  fxLayoutGap="30px" *ngIf="modele" class="container">
+            <input matInput formControlName="id" hidden>
+            <div fxLayout="row" fxLayoutGap="30px">
+                <mat-form-field class="w-50">
+                    <mat-placeholder><mat-icon>texture</mat-icon>Risque de pertes de revenus</mat-placeholder>
+                    <input matInput type="number" min="0" formControlName="risque_pertes">
+                </mat-form-field>
+                <mat-form-field class="w-50">
+                    <mat-placeholder><mat-icon>grain</mat-icon>Perte</mat-placeholder>
+                    <input matInput type="number" min="0" formControlName="perte">
+                </mat-form-field>
+                <mat-form-field class="w-50" formGroupName="typologie_perte">
+                    <mat-select placeholder="Typologies de pertes" formControlName="id" required>
+                        <mat-option *ngFor="let type of typologiesPertes" [value]="type.id">{{type.libelle}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="w-50">
+                    <mat-placeholder><mat-icon>blur_linear</mat-icon>Revenu sauvé</mat-placeholder>
+                    <input matInput type="number" min="0" formControlName="revenu_sauve">
+                </mat-form-field>
+                <mat-form-field class="w-50">
+                    <mat-placeholder><mat-icon>grain</mat-icon>Recouvrement</mat-placeholder>
+                    <input matInput type="number" min="0" formControlName="recouvrement">
+                </mat-form-field>
+                <mat-form-field class="w-50">
+                    <mat-placeholder><mat-icon>texture</mat-icon>Pertes stoppées</mat-placeholder>
+                    <input matInput type="number" min="0" formControlName="pertes_stop">
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutGap="30px">
+                <mat-form-field class="w-50">
+                    <mat-select placeholder="Correction" formControlName="correction">
+                        <mat-option [value]="0">Oui</mat-option>
+                        <mat-option [value]="1">Non</mat-option>
+                        <mat-option [value]="2">Non applicable</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+                <div *ngFor="let champ of modele| slice:8; let i = index" class="content" formGroupName="extras">
+                    <mat-form-field class="w-50">
+                        <mat-placeholder><mat-icon>poll</mat-icon>{{champ.libelle}}</mat-placeholder>
+                        <input matInput type="text"  formControlName="{{champ.colonne}}" >
+                    </mat-form-field>
+                </div>
+            <!--<mat-form-field class="w-50">
+                <mat-placeholder><mat-icon>poll</mat-icon>Total HLR</mat-placeholder>
+                <input matInput type="number" min="0" formControlName="total_hlr" required>
+            </mat-form-field>
+            <mat-form-field class="w-50">
+                <mat-placeholder><mat-icon>poll</mat-icon>Nombre not camel</mat-placeholder>
+                <input matInput type="number" min="0" formControlName="nbre_not_camel">
+            </mat-form-field>
+            <mat-form-field class="w-50">
+                <mat-placeholder><mat-icon>poll</mat-icon>Nombre imsi prepaid</mat-placeholder>
+                <input matInput type="number" min="0" formControlName="nbre_imsi_prepaid">
+            </mat-form-field>
+            <mat-form-field class="w-50">
+                <mat-placeholder><mat-icon>poll</mat-icon>Volume écat en mn</mat-placeholder>
+                <input matInput type="number" min="0" formControlName="vlm_ecat">
+            </mat-form-field>
+            <mat-form-field class="w-50">
+                <mat-placeholder><mat-icon>view_column</mat-icon>Volume</mat-placeholder>
+                <input matInput type="number" min="0" formControlName="volume">
+            </mat-form-field>-->
+        </div>
+        <!--<div fxLayout="row" fxLayoutGap="30px">
+            <mat-form-field class="w-50">
+                <input matInput type="date" placeholder="Date de correction" formControlName="date_correction">
+            </mat-form-field>
+        </div>-->
+    </form>
+    <!--<span *ngIf="isSavingError" class="red-text center error-message">{{ lblMessage }}</span>-->
+</div>
+<div *ngIf="modele" fxLayout="row" fxLayoutAlign="space-between center">
+    <button mat-raised-button color="accent" (click)="save(form.value)" [disabled]="!form.valid"><span>Enregistrer</span></button>
+    <button mat-raised-button color="warn" (click)="close()">Annuler</button>
+</div>
+
+<div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+    <mat-spinner color="primary"></mat-spinner>
+</div>

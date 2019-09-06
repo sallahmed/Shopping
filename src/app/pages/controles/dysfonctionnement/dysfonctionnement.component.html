@@ -1,0 +1,124 @@
+<div fxLayout="column">
+    <div class="flex-p">
+        <div fxLayout="row">
+            <mat-button-toggle-group #controls="matButtonToggleGroup">
+                <mat-button-toggle value="add">
+                    <a routerLink="/controles/new-dysfonctionnement"><mat-icon>control_point</mat-icon></a>
+                </mat-button-toggle>
+                <mat-button-toggle value="search">
+                    <mat-icon>search</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <form class="entite-search" [class.show]="controls.value == 'search'">
+            <mat-form-field class="entite-search-input">
+                <input matInput placeholder="Search dysfonctionnement by libelle..." name="search">
+            </mat-form-field>
+        </form>
+        <div fxLayout="column" class="mat-elevation-z8">
+            <mat-form-field class="p-1">
+                <input matInput placeholder="Type to filter the libelle column..." (keyup)="updateFilter($event)">
+            </mat-form-field>
+        </div>
+        <ngx-datatable
+                #table
+                class="material"
+                [headerHeight]="50"
+                [limit]="10"
+                [columnMode]="'force'"
+                [footerHeight]="50"
+                [rowHeight]="'auto'"
+                [rows]="rows"
+                [loadingIndicator]="loadingIndicator"
+                [selected]="selected"
+                [selectionType]="'checkbox'"
+                (select)='onSelect($event)'>
+            <ngx-datatable-column
+                    [width]="30"
+                    [sortable]="false"
+                    [canAutoResize]="false"
+                    [draggable]="true"
+                    [resizeable]="false"
+                    [headerCheckboxable]="true"
+                    [checkboxable]="true">
+            </ngx-datatable-column>
+            <ngx-datatable-column name="libelle">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span>
+                      {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="controle">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span>
+                      {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="porteur">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span>
+                      {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="dateDebut">
+                <ng-template ngx-datatable-header-template>
+                    <span>date début</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span>
+                      {{value | date :  "dd/MM/y" }}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="dateFin">
+                <ng-template ngx-datatable-header-template>
+                    <span>date fin</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span>
+                      {{value | date :  "dd/MM/y" }}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="statut">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span>
+                        <mat-chip-list>
+                            <mat-chip *ngIf="value===0" color="primary" selected="true" class="info-chip">
+                                Nouveau
+                            </mat-chip>
+                            <mat-chip *ngIf="value===1" color="primary" selected="true" class="info-chip">
+                                Abandonné
+                            </mat-chip>
+                            <mat-chip *ngIf="value===2" color="secondary" selected="true" class="info-chip">
+                                En cours
+                            </mat-chip>
+                            <mat-chip *ngIf="value===3" color="accent" selected="true" class="info-chip">
+                                Fait
+                            </mat-chip>
+                            <mat-chip *ngIf="value===4" color="accent" selected="true" class="info-chip">
+                                Soldé
+                            </mat-chip>
+                        </mat-chip-list>
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="actions" prop="id">
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <!--<a (click)="details(row);" matTooltip="Détails du dysfonctionnement">
+                        <mat-icon>visibility</mat-icon>
+                    </a>-->
+                    <a (click)="edit(row);" matTooltip="Modifier le dysfonctionnement">
+                        <mat-icon>settings</mat-icon>
+                    </a>
+                    <a (click)="traiter(row);" matTooltip="Traiter le dysfonctionnement">
+                        <mat-icon>build</mat-icon>
+                    </a>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>

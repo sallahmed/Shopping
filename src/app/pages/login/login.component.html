@@ -1,0 +1,54 @@
+<mat-sidenav-container>
+
+  <div fxLayout="row" fxLayoutAlign="center center" class="h-100">
+
+       <!--<form [formGroup]="form" (ngSubmit)="onSubmit(form.value)" fxFlex="80" fxFlex.gt-sm="30" fxFlex.sm="60">-->
+       <form [formGroup]="form" (ngSubmit)="OnSubmit(Identifiant.value, Password.value)" fxFlex="80" fxFlex.gt-sm="30" fxFlex.sm="60">
+            <mat-card class="p-0 mat-elevation-z24 box">
+                <div fxLayout="column" fxLayoutAlign="center center" class="bg-primary box-header">
+                    <span *ngIf="isLoginError" class="red-text center error-message">Login et/ou mot de passe incorrect(s)</span>
+                    <!--<button mat-fab color="accent" class="mat-elevation-z12" (click)="onSubmit(form.value);">-->
+                    <button mat-fab color="accent" class="mat-elevation-z12" (click)="OnSubmit(Identifiant.value, Password.value);">
+                        <mat-icon>exit_to_app</mat-icon>
+                    </button>
+                    <a mat-button routerLink="/forgot-password">{{'auth.text'|translate}}</a>
+                </div>
+                <mat-card-content fxLayout="column" fxLayoutAlign="end center" class="box-content">
+                    <mat-card fxLayout="column" fxLayoutAlign="center center" class="mat-elevation-z12 box-content-inner">
+                        <span class="box-content-header">{{'auth.title'|translate}}</span>
+                        <mat-form-field class="w-100">
+                            <input matInput placeholder="{{'auth.login' | translate}}" formControlName="identifiant" #Identifiant ngModel name="Identifiant">
+                            <mat-error *ngIf="form.controls.identifiant.errors?.required">L'identifiant est obligatoire</mat-error>
+                            <!--<mat-error *ngIf="form.controls.email.hasError('invalidEmail')">Invalid email address</mat-error>!-->
+                        </mat-form-field>
+                        <mat-form-field class="w-100">
+                            <input type="password" matInput placeholder="{{'auth.password' | translate}}" formControlName="password"  #Password ngModel name="Password">
+                            <mat-error *ngIf="form.controls.password.errors?.required">Le mot de passe est obligatoire</mat-error>
+                            <mat-error *ngIf="form.controls.password.hasError('minlength')">Minimum 6 caractères</mat-error>
+                        </mat-form-field>
+
+                    </mat-card>
+                    <button mat-raised-button color="primary" class="mat-elevation-z12 box-button" type="submit">
+                        {{'auth.submit' | translate}}
+                        <span *ngIf="isSubmitted" fxLayout="row" fxLayoutAlign="center center">
+                            <mat-spinner [diameter]="15" color="accent"></mat-spinner>
+                        </span>
+                    </button>
+                </mat-card-content>
+                <div fxLayout="column" fxLayoutAlign="center center">
+                    <mat-form-field class="w-50" formGroupName="langue">
+                        <mat-select placeholder="Langue" [(ngModel)]="selected" formControlName="id" (selectionChange)="getLangue($event)">
+                            <mat-option *ngFor="let langue of langues"  [value]="langue.id">
+                                <img src="{{langue.img}}" width="20" alt="{{langue.libelle}}">
+                                {{langue.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-card>
+
+        </form>
+
+  </div>
+
+</mat-sidenav-container>

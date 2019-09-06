@@ -1,0 +1,27 @@
+<h1 mat-dialog-title><span>Détails du contrôle</span></h1>
+    <div mat-dialog-content *ngIf="controle.id">
+        <div><span><b>Référence: </b>{{controle.reference}}</span></div>
+        <div><span><b>Libellé: </b>{{controle.libelle}}</span></div>
+        <div><span><b>Degré de maturité: </b>{{controle.maturite}}</span></div>
+        <div><span><b>Niveau de priorité: </b>{{controle.priorite}}</span></div>
+        <div><span><b>Risque identifié: </b>{{controle.risque_identifie}}</span></div>
+        <div><span><b>Qualification risque: </b>{{controle.qualification_risque}}</span></div>
+        <div><span><b>Description contrôle: </b>{{controle.description}}</span></div>
+        <div><span><b>Type de contrôle: </b>{{controle.typeControle.libelle}}</span></div>
+        <div><span><b>Type de trafic: </b>{{controle.typeTrafic.libelle}}</span></div>
+        <div><span><b>Entité: </b>{{controle.entite.libelle}}</span></div>
+        <div><span><b>Périodicité: </b>{{controle.periodicite.libelle}}</span></div>
+        <div><span><b>Outil: </b>{{controle.outil.libelle}}</span></div>
+        <div><span><b>Méthode de contrôle: </b>{{controle.methodeControle.libelle}}</span></div>
+        <div><span><b>Couverture de contrôle: </b>{{controle.couvertureControle.libelle}}</span></div>
+        <!--
+        <table mat-table class=" mat-elevation-z8">
+            <ng-container matColumnDef="duration">
+                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <td mat-cell *matCellDef="let user"> ffffff </td>
+            </ng-container>
+        </table>-->
+    </div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center">
+    <button mat-raised-button color="warn" (click)="close()">Annuler</button>
+</div>

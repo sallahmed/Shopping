@@ -1,0 +1,62 @@
+<div fxLayout="column">
+    <div class="flex-p">
+        <div fxLayout="row">
+            <mat-button-toggle-group #controls="matButtonToggleGroup">
+                <mat-button-toggle value="add">
+                    <a routerLink="/reportings/saisie-type-sunshine">
+                      <mat-icon>control_point</mat-icon>
+                    </a>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <ngx-datatable
+            #table
+            class="material"
+            [headerHeight]="50"
+            [limit]="10"
+            [columnMode]="'force'"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [rows]="rows"
+            [loadingIndicator]="loadingIndicator"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            (activate)="onActivate($event)"
+            (select)='onSelect($event)'>
+            <ngx-datatable-column
+                [width]="30"
+                [sortable]="false"
+                [canAutoResize]="false"
+                [draggable]="true"
+                [resizeable]="false"
+                [headerCheckboxable]="true"
+                [checkboxable]="true">
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Code</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.code}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Libelle</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.libelle}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template><span>Description</span></ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.description}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Actions" prop="id">
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <a *ngIf="row.id" (click)="saisirTypeSunshine(row);" matTooltip="Modifier le type sunshine">
+                        <mat-icon>settings</mat-icon>
+                    </a>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>

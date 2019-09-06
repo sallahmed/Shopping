@@ -1,0 +1,148 @@
+<div fxLayout="column">
+    <div class="flex-p">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-button-toggle-group #controls="matButtonToggleGroup">
+                <!--<mat-button-toggle value="add" (click)="newControle(null)">
+                    <mat-icon>control_point</mat-icon>
+                </mat-button-toggle>-->
+                <mat-button-toggle value="add">
+                    <a routerLink="/controles/new-controle"><mat-icon>control_point</mat-icon></a>
+                </mat-button-toggle>
+                <mat-button-toggle value="search">
+                    <mat-icon>search</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <button mat-raised-button pull-right color="accent" (click)="exportAsExcel()"><mat-icon>get_app</mat-icon>{{'buton.export'| translate}}</button>
+        </div>
+        <form class="controle-search" [class.show]="controls.value == 'search'">
+            <mat-form-field class="user-search-input">
+                <input matInput placeholder="Search controle by libelle.." name="search">
+            </mat-form-field>
+        </form>
+        <div fxLayout="column" class="mat-elevation-z8">           
+            <mat-form-field class="p-1">
+                <input matInput placeholder="Type to filter the libelle column..." (keyup)="updateFilter($event)">
+            </mat-form-field>
+        </div>
+        <ngx-datatable
+            #table
+            class="material"
+            [headerHeight]="50"
+            [limit]="10"
+            [columnMode]="'force'"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [rows]="rows"
+            [loadingIndicator]="loadingIndicator"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            (activate)="onActivate($event)"
+            (select)='onSelect($event)'>
+            <ngx-datatable-column
+                [width]="30"
+                [sortable]="false"
+                [canAutoResize]="false"
+                [draggable]="true"
+                [resizeable]="false"
+                [headerCheckboxable]="true"
+                [checkboxable]="true">
+            </ngx-datatable-column>
+
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>reference</span>
+                </ng-template>
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                  {{row.reference}}
+              </ng-template>
+            </ngx-datatable-column>
+            <!--<ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Type</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.controle.type_controle.code}}
+                </ng-template>
+            </ngx-datatable-column>-->
+            <!--<ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>Risque identifié</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.risque_identifie}}
+                </ng-template>
+            </ngx-datatable-column>-->
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>{{'menu.act'| translate}}</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.controle.activite.libelle}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>{{'title.libelle'| translate}}</span>
+                </ng-template>
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                  {{row.controle.libelle}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>{{'menu.period'| translate}}</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{row.controle.periodicite.libelle}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>{{'control.porteur'| translate}}</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{ row.porteur? row.porteur.prenom+ ' '+row.porteur.nom: '' }}
+                </ng-template>
+            </ngx-datatable-column>
+            <!--<ngx-datatable-column>
+                <ng-template ngx-datatable-header-template>
+                    <span>{{'menu.struct'| translate}}</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <!--{{row.porteur.structure.pere ? row.porteur.structure.pere.pere?  row.porteur.structure.pere.pere.libelle :''+'/'+row.porteur.structure.pere?row.porteur.structure.pere.libelle:''+'/'+row.porteur.structure.libelle : ''}}
+                    {{row.porteur? row.porteur.structure.libelle: ''}}
+                </ng-template>
+            </ngx-datatable-column>
+            <!--<ngx-datatable-column name="etat">
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    {{ value===0? 'En attente':'Valide' }}
+                </ng-template>
+            </ngx-datatable-column>!-->
+            <ngx-datatable-column name="actions" prop="id">
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value" let-rowIndex="rowIndex" >
+                        <a (click)="detailsControle(row);" matTooltip="{{'control.details'| translate}}">
+                            <mat-icon>visibility</mat-icon>
+                        </a>
+                    <!--<button (click)="editControle(idControle);">
+                            <mat-icon>settings</mat-icon>
+                        </button>-->
+                        <a (click)="editControle(row);" matTooltip="{{'control.edit'| translate}}">
+                            <mat-icon>settings</mat-icon>
+                        </a>
+                        <a *ngIf="isSuperAdmin || isAdmin" (click)="changePorteur(row);" matTooltip="{{'control.changeporteur'| translate}}">
+                            <mat-icon>autorenew</mat-icon>
+                        </a>
+                        <a *ngIf="isSuperAdmin" (click)="deleteControle(row);" matTooltip="{{'control.delete'| translate}}">
+                            <mat-icon>remove_circle</mat-icon>
+                        </a>
+                        <!--<a (click)="configModele(row);" matTooltip="Paramétrer le modèle">
+                            <mat-icon>event_note</mat-icon>
+                        </a>-->
+                    <mat-slide-toggle  class="toggle-setting" name="activation" [checked]="row.statut==1? true:false" [(ngModel)]="device[rowIndex]" (change)="onToggleChanged(row, $event, rowIndex)"><!--{{row.etat==0 ? 'Réactiver' : 'Désactiver'}}--></mat-slide-toggle>
+                    <!--<button mat-button color="accent" class="mat-raised-button mat-accent" routerLink="/controles/details-controle">Fiches</button>
+                    <button mat-button color="accent" class="mat-raised-button mat-accent" (click)="detailsControle(row);">Fiches</button>-->
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>

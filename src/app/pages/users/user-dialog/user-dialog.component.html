@@ -1,0 +1,146 @@
+<h1 mat-dialog-title><span *ngIf="!user.id">{{'title.add'| translate}}</span><span *ngIf="user.id">{{'title.edit'| translate}}</span> {{'user.libelle'| translate}}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form" class="user-form">
+        <mat-tab-group class="vertical-tabs">
+            <mat-tab label="{{'user.base'| translate}}">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>person</mat-icon> {{'user.username'| translate}}</mat-placeholder>
+                        <input matInput formControlName="username" required>
+                        <mat-error *ngIf="form.controls.username.errors?.required">{{'user.idwarn'| translate}}</mat-error>
+                        <mat-error *ngIf="form.controls.username.hasError('minlength')">{{'user.idinvalid'| translate}}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>vpn_key</mat-icon> {{'user.password'| translate}}</mat-placeholder>
+                        <input matInput formControlName="password" required [type]="passwordHide ? 'password' : 'text'">
+                        <mat-icon matSuffix (click)="passwordHide = !passwordHide">{{passwordHide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                        <mat-error *ngIf="form.controls.password.errors?.required">{{'user.mdpwarn'| translate}}</mat-error>
+                        <mat-error *ngIf="form.controls.password.hasError('minlength')">{{'user.mdpinvalid'| translate}}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="{{'user.lastname'| translate}}" formControlName="nom" required>
+                        <mat-error *ngIf="form.controls.nom.errors?.required">{{'user.namewarn'| translate}}</mat-error>
+                        <mat-error *ngIf="form.controls.nom.hasError('minlength')">{{'user.namemin'| translate}}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="{{'user.firstname'| translate}}" formControlName="prenom" required>
+                        <mat-error *ngIf="form.controls.prenom.errors?.required">{{'user.firstnamewarn'| translate}}</mat-error>
+                        <mat-error *ngIf="form.controls.prenom.hasError('minlength')">{{'user.namemin'| translate}}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="{{'user.matricule'| translate}}" formControlName="matricule" required>
+                        <mat-error *ngIf="form.controls.matricule.errors?.required">{{'user.matwarn'| translate}}</mat-error>
+                        <mat-error *ngIf="form.controls.matricule.hasError('minlength')">{{'user.matmin'| translate}}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="{{'user.email'| translate}}" formControlName="email" required>
+                        <mat-error *ngIf="form.controls.email.errors?.required">{{'user.emailwarn'| translate}}</mat-error>
+                        <mat-error *ngIf="form.controls.email.hasError('invalidEmail')">{{'user.emailerr'| translate}}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="{{'user.phone'| translate}}" formControlName="telephone" required>
+                        <!--<mat-error *ngIf="form.controls.phone.errors?.required">Le téléphone est obligatoire</mat-error>
+                        <mat-error *ngIf="form.controls.phone.hasError('invalidPhoneNumber')">Numéro invalide</mat-error>
+                        <mat-error *ngIf="form.controls.phone.hasError('minlength')">Minimum 9 caractères</mat-error>-->
+                    </mat-form-field>
+                    <!--<mat-form-field class="w-100">
+                     <input matInput placeholder="Image url" formControlName="urlPhoto">
+                     <input matInput type="file" name="urlPhoto" #urlPhoto="ngModel"  [(ngModel)]="user.urlPhoto" accept="image/*" (change)="handleFileInput($event.target.files)">
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <img *ngIf="imageUrl" [src]="imageUrl" formControlName="photo" class="transition-2" style="width:150px;height:100px">
+                    </mat-form-field>-->
+                    <mat-checkbox formControlName="manager">Manager</mat-checkbox>
+                    <p *ngIf="user.id"><span>Date d'inscription:</span> <i>{{user.last_login | date:"dd MMMM, yyyy 'at' HH:mm" }}</i></p>
+                    <p *ngIf="user.id"><span>Dernière connexion:</span> <i>{{user.last_login | date:"dd MMMM, yyyy 'at' HH:mm" }}</i> </p>
+                </div>
+            </mat-tab>
+            <mat-tab label="{{'user.person'| translate}}" formGroupName="profil">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100" >
+                        <mat-select  placeholder="{{'user.profil'| translate}}" formControlName="id" required>
+                            <mat-option *ngFor="let role of roles; let i = index"  [value]="role.id" (change)="addRole($event,roles,i)">
+                                {{role.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <!--<mat-form-field class="w-100">
+                        <input matInput placeholder="Téléphone" formControlName="telephone" required>
+                        <!--<mat-error *ngIf="form.controls.phone.errors?.required">Le téléphone est obligatoire</mat-error>
+                        <mat-error *ngIf="form.controls.phone.hasError('invalidPhoneNumber')">Numéro invalide</mat-error>
+                        <mat-error *ngIf="form.controls.phone.hasError('minlength')">Minimum 9 caractères</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput [matDatepicker]="birthday" placeholder="Date de naissance" formControlName="birthday">
+                        <mat-datepicker-toggle matSuffix [for]="birthday"></mat-datepicker-toggle>
+                        <mat-datepicker #birthday></mat-datepicker>
+                    </mat-form-field>
+                    <mat-radio-group formControlName="gender">
+                        <mat-radio-button value="male" labelPosition="before">Masculin</mat-radio-button>
+                        <mat-radio-button value="female" labelPosition="before">Feminin</mat-radio-button>
+                    </mat-radio-group>-->
+                </div>
+            </mat-tab>
+            <mat-tab label="{{'user.prof'| translate}}" formGroupName="structure">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="{{'user.structure'| translate}}" formControlName="id" required>
+                            <mat-option *ngFor="let structure of structures" [value]="structure.id">
+                                <span *ngIf="isSuperAdmin">{{structure.libelle}} - {{structure.entite.libelle }}</span>
+                                <span *ngIf="!isSuperAdmin">{{structure.libelle}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <!--<mat-form-field class="w-100">
+                        <input matInput placeholder="Adresse" formControlName="adresse">
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="Id" formControlName="id">
+                    </mat-form-field>-->
+                </div>
+            </mat-tab>
+            <!--
+            <mat-tab label="Contacts" formGroupName="contacts">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="Email" formControlName="email">
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="Téléphone" formControlName="phone">
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="Adresse" formControlName="address">
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Social life" formGroupName="social">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="Facebook" formControlName="facebook">
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="Twitter" formControlName="twitter">
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="Google" formControlName="google">
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Paramètres" formGroupName="settings">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-checkbox formControlName="isActive">Active</mat-checkbox>
+                    <mat-checkbox formControlName="isDeleted">Blocked</mat-checkbox>
+                    <p *ngIf="user.id"><span>Date d'inscription:</span> <i>{{user.settings.registrationDate | date:"dd MMMM, yyyy 'at' HH:mm" }}</i></p>
+                    <p *ngIf="user.id"><span>Dernière connexion:</span> <i>{{user.settings.joinedDate | date:"dd MMMM, yyyy 'at' HH:mm" }}</i> </p>
+                </div>
+            </mat-tab> -->
+        </mat-tab-group>
+    </form>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center">
+    <button mat-raised-button color="accent" (click)="save(form.value)" [disabled]="!form.valid"><span *ngIf="!user.id">{{'buton.ok'| translate}}</span><span *ngIf="user.id">{{'buton.edit'| translate}}</span></button>
+    <button mat-raised-button color="warn" (click)="close()">{{'buton.no'| translate}}</button>
+</div>
+<div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+    <mat-spinner color="primary"></mat-spinner>
+</div>

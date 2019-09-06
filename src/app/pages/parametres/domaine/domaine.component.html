@@ -1,0 +1,82 @@
+<div fxLayout="column">
+    <div class="flex-p">
+        <div fxLayout="row">
+            <mat-button-toggle-group #controls="matButtonToggleGroup">
+                <mat-button-toggle value="add" (click)="openDomaineDialog(null)">
+                    <mat-icon>control_point</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="search">
+                    <mat-icon>search</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <form class="entite-search" [class.show]="controls.value == 'search'">
+            <mat-form-field class="entite-search-input">
+                <input matInput placeholder="Search domain by libelle..." name="search">
+            </mat-form-field>
+        </form>
+        <div fxLayout="column" class="mat-elevation-z8">
+            <mat-form-field class="p-1">
+                <input matInput placeholder="Type to filter the libelle column..." (keyup)="updateFilter($event)">
+            </mat-form-field>
+        </div>
+        <ngx-datatable
+            #table
+            class="material"
+            [headerHeight]="50"
+            [limit]="10"
+            [columnMode]="'force'"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [rows]="rows"
+            [loadingIndicator]="loadingIndicator"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            (activate)="onActivate($event)"
+            (select)='onSelect($event)'>
+            <ngx-datatable-column
+                [width]="30"
+                [sortable]="false"
+                [canAutoResize]="false"
+                [draggable]="true"
+                [resizeable]="false"
+                [headerCheckboxable]="true"
+                [checkboxable]="true">
+            </ngx-datatable-column>
+            <ngx-datatable-column name="libelle">
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                <span
+                  title="Double click to edit"
+                  (dblclick)="editing[rowIndex + '-libelle'] = true"
+                  *ngIf="!editing[rowIndex + '-libelle']">
+                  {{value}}
+                </span>
+                <input
+                  autofocus
+                  (blur)="updateValue($event, 'libelle', rowIndex)"
+                  *ngIf="editing[rowIndex+ '-libelle']"
+                  type="text"
+                  [value]="value"
+                />
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="code">
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                <span>
+                  {{value}}
+                </span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="actions" prop="id">
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value" let-rowIndex="rowIndex" >
+                    <a (click)="openDomaineDialog(row);" matTooltip="Modifier le domaine">
+                        <mat-icon>settings</mat-icon>
+                    </a>
+                    <a (click)="deleteDomaine(row);" matTooltip="Supprimer le domaine">
+                        <mat-icon>remove_circle</mat-icon>
+                    </a>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>

@@ -1,0 +1,155 @@
+<h1 mat-dialog-title><span *ngIf="!controle.id">Ajouter</span><span *ngIf="controle.id">Modifier</span> un contrôle</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form" class="controle-form">
+        <mat-tab-group class="vertical-tabs">
+            <mat-tab label="Général">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>person</mat-icon> Reference</mat-placeholder>
+                        <input matInput formControlName="Reference" required>
+                        <mat-error *ngIf="form.controls.reference.errors?.required">La référence est obligatoire</mat-error>
+                        <mat-error *ngIf="form.controls.reference.hasError('minlength')">Minimum 5 caractères</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>poll</mat-icon>Libellé</mat-placeholder>
+                        <input matInput formControlName="libelle" required>
+                        <mat-error *ngIf="form.controls.libelle.errors?.required">Le libellé est obligatoire</mat-error>
+                        <mat-error *ngIf="form.controls.libelle.hasError('minlength')">Minimum 6 caractères</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>view_stream</mat-icon>Dégré de priorité</mat-placeholder>
+                        <input matInput formControlName="priorite" required>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>view_column</mat-icon>Niveau de maturité</mat-placeholder>
+                        <input matInput formControlName="maturite" required>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>blur_linear</mat-icon>Risque identifié</mat-placeholder>
+                        <input matInput formControlName="risque_identifie" required>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>grain</mat-icon>Qualification du risque</mat-placeholder>
+                        <input matInput formControlName="qualification_risque">
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>texture</mat-icon>Description du contrôle</mat-placeholder>
+                        <input matInput formControlName="description">
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <input matInput [matDatepicker]="date_demarrage" placeholder="Date de démarrage" formControlName="date_demarrage">
+                        <mat-datepicker-toggle matSuffix [for]="date_demarrage"></mat-datepicker-toggle>
+                        <mat-datepicker #date_demarrage></mat-datepicker>
+                    </mat-form-field>
+                    <!--<mat-form-field class="w-100">
+                        <mat-placeholder><mat-icon>texture</mat-icon>Template</mat-placeholder>
+                        <input type="file" formControlName="template"  accept="application/vnd.ms-excel">
+                    </mat-form-field>-->
+                </div>
+            </mat-tab>
+            <mat-tab label="Type de contrôle" formGroupName="type_controle">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Type de contrôle" formControlName="id">
+                            <mat-option *ngFor="let tpCtrl of listTypeControle" [value]="tpCtrl.id">
+                                {{tpCtrl.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Domaine" formGroupName="domaine">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Domaine" formControlName="id">
+                            <mat-option *ngFor="let domaine of listDomaine" [value]="domaine.id">
+                                {{domaine.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Porteur" formGroupName="porteur">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Porteur" formControlName="id">
+                            <mat-option *ngFor="let porteur of listPorteur" [value]="porteur.id">
+                                {{porteur.prenom}} {{porteur.nom}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Type de trafic" formGroupName="type_trafic">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Type de trafic" formControlName="id">
+                            <mat-option *ngFor="let tpTfc of listTypeTrafic" [value]="tpTfc.id">
+                                {{tpTfc.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Entité" formGroupName="entite">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Entite" formControlName="id">
+                            <mat-option *ngFor="let entite of listEntite" [value]="entite.id">
+                                {{entite.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Periodicité" formGroupName="periodicite">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Periodicite" formControlName="id">
+                            <mat-option *ngFor="let per of listPeriodicite" [value]="per.id">
+                                {{per.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Méthode de contrôle" formGroupName="methode_controle">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Méthode de contrôle" formControlName="id">
+                            <mat-option *ngFor="let methode of listMethodeControle" [value]="methode.id">
+                                {{methode.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Outil" formGroupName="outil">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Outil" formControlName="id">
+                            <mat-option *ngFor="let outil of listOutil" [value]="outil.id">
+                                {{outil.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Couverture contrôle" formGroupName="couverture_controle">
+                <div fxLayout="column" class="form-field-outer">
+                    <mat-form-field class="w-100">
+                        <mat-select placeholder="Couverture contrôle" formControlName="id">
+                            <mat-option *ngFor="let couverture of listCouvertureControle" [value]="couverture.id">
+                                {{couverture.libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+       </mat-tab-group>
+   </form>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center">
+   <button mat-raised-button color="primary" [mat-dialog-close]="form.value" [disabled]="!form.valid"><span *ngIf="!controle.id">Enregistrer</span><span *ngIf="controle.id">Modifier</span></button>
+   <button mat-raised-button color="warn" (click)="close()">Annuler</button>
+</div>

@@ -1,0 +1,60 @@
+<div fxLayout="column" fxLayout.gt-sm="row wrap">
+    <div fxFlex="100" class="flex-p">
+        <mat-card>
+            <mat-card-header fxLayoutAlign="center center"><h2>{{'title.headerviewcontrol'| translate}} </h2> </mat-card-header>
+        </mat-card>
+        <mat-card>
+            <mat-card-content>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">Type :</span>
+                    <span class="right">{{ controle.type_controle.code }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'menu.domain'| translate}} :</span>
+                    <span class="right">{{ controle.domaine.libelle }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'menu.subdomain'| translate}} :</span>
+                    <span class="right">{{ controle.sous_domaine? controle.sous_domaine.libelle : 'N/A' }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.title'| translate}} :</span>
+                    <span class="right">{{ controle.libelle }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">Description :</span>
+                    <span class="right">{{ controle.description}}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.risk'| translate}} :</span>
+                    <span class="right">{{ controle.risque_identifie }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.eval'| translate}} :</span>
+                    <span *ngIf="controle.qualification_risque" class="right">{{ controle.qualification_risque}}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.code'| translate}} :</span>
+                    <span class="right">{{ controle.reference }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.freq'| translate}} :</span>
+                    <span class="right">{{ controle.periodicite.libelle }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                        <span class="left">{{'control.method'| translate}} :</span>
+                        <span *ngIf="controle.methode_controle" class="right">{{ controle.methode_controle.libelle }}</span>
+                    </p>
+                <br />
+                <a *ngIf="controle.template" href="http://{{controle.template.path}}" target="_blank">
+                    <button mat-raised-button color="primary" class="left-btn">{{'buton.download'| translate}} template</button>
+                </a>
+                
+            </mat-card-content>
+
+
+        </mat-card>
+    </div>
+
+</div>
+<br /><br />

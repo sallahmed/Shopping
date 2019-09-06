@@ -1,0 +1,70 @@
+<h1><span >Saisir</span> Sunshine Initiative</h1>
+<div>
+    <form [formGroup]="form" class="saisie-sunshine-form">
+        <div fxLayout="row" fxLayoutGap="30px">
+            <input matInput formControlName="id" hidden>
+            <mat-form-field class="w-50" label="Type Sunshine" formGroupName="type_sunshine">
+                <mat-select placeholder="Type shunshine" formControlName="id" required>
+                    <mat-option *ngFor="let typS of typeSunshines" [value]="typS.id">
+                        {{typS.libelle}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="w-50" label="Entite" formGroupName="entite">
+                <mat-select placeholder="Entite" formControlName="id" required>
+                    <mat-option *ngFor="let en of entites" [value]="en.id">
+                        {{en.libelle}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="w-50">
+                <mat-select placeholder="Mois" formControlName="mois">
+                    <mat-option [value]="1">Janvier</mat-option>
+                    <mat-option [value]="2">Février</mat-option>
+                    <mat-option [value]="3">Mars</mat-option>
+                    <mat-option [value]="4">Avril</mat-option>
+                    <mat-option [value]="5">Mai</mat-option>
+                    <mat-option [value]="6">Juin</mat-option>
+                    <mat-option [value]="7">Juillet</mat-option>
+                    <mat-option [value]="8">Août</mat-option>
+                    <mat-option [value]="9">Septembre</mat-option>
+                    <mat-option [value]="10">Octobre</mat-option>
+                    <mat-option [value]="11">Novembre</mat-option>
+                    <mat-option [value]="12">Décembre</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="w-50">
+                <mat-select placeholder="Année d'exercice" formControlName="annee">
+                    <mat-option *ngFor="let an of annees" [value]="an.annee">{{an.annee}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="30px">
+            <mat-form-field class="w-50">
+                <mat-placeholder><mat-icon>poll</mat-icon>Valeur</mat-placeholder>
+                <input matInput type="number" min="0" formControlName="valeur">
+            </mat-form-field>
+            <mat-form-field class="w-50">
+                <mat-placeholder><mat-icon>poll</mat-icon>Date début</mat-placeholder>
+                <input matInput type="date" formControlName="date_debut">
+            </mat-form-field>
+            <mat-form-field class="w-50">
+                <mat-placeholder><mat-icon>poll</mat-icon>Date fin</mat-placeholder>
+                <input matInput type="date" formControlName="date_fin">
+            </mat-form-field>
+            <mat-form-field class="w-50">
+                <mat-placeholder><mat-icon>poll</mat-icon>Commentaire</mat-placeholder>
+                <input matInput type="text" formControlName="commentaire">
+            </mat-form-field>
+        </div><br /><br />
+        <!--span *ngIf="isSavingError" class="blue-text center error-message">{{ lblMessage }}</span>-->
+    </form>
+</div>
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <button mat-raised-button color="primary" (click)="saveSunshine(form.value)" [disabled]="!form.valid"><span>Enregistrer</span></button>
+    <button mat-raised-button color="warn" (click)="close()">Annuler</button>
+</div>
+
+<div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+    <mat-spinner color="primary"></mat-spinner>
+</div>

@@ -1,0 +1,149 @@
+<div fxLayout="column" fxLayout.gt-sm="row wrap">
+    <div fxFlex="35" class="flex-p">
+        <mat-card>
+            <mat-card-header fxLayoutAlign="space-around"><h2>{{'title.headerform'| translate}} </h2> <button mat-stroked-button color="warn" (click)="reconduire(controleFiliale)">{{'buton.renew'| translate}}<mat-icon>touch_app</mat-icon></button></mat-card-header>
+        </mat-card>
+        <mat-card>
+            <mat-card-content>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.entity'| translate}} :</span>
+                    <span class="right">{{ controleFiliale.filiale.libelle}}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.porteur'| translate}} :</span>
+                    <span class="right">{{ controleFiliale.porteur? controleFiliale.porteur.prenom+ ' '+controleFiliale.porteur.nom : '' }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">Type :</span>
+                    <span class="right">{{ controleFiliale.controle.type_controle.code }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'menu.domain'| translate}} :</span>
+                    <span class="right">{{ controleFiliale.controle.domaine.libelle }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'menu.subdomain'| translate}} :</span>
+                    <span class="right">{{ controleFiliale.controle.sous_domaine? controleFiliale.controle.sous_domaine.libelle : 'N/A' }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.title'| translate}} :</span>
+                    <span class="right">{{ controleFiliale.controle.libelle }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">Description :</span>
+                    <span class="right">{{ controleFiliale.controle.description}}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.risk'| translate}} :</span>
+                    <span class="right">{{ controleFiliale.controle.risque_identifie }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.eval'| translate}} :</span>
+                    <span *ngIf="controleFiliale.controle.qualification_risque" class="right">{{ controleFiliale.controle.qualification_risque}}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.code'| translate}} :</span>
+                    <span class="right">{{ controleFiliale.reference }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.month'| translate}} :</span>
+                    <span class="right">{{ mois }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                    <span class="left">{{'control.freq'| translate}} :</span>
+                    <span class="right">{{ controleFiliale.controle.periodicite.libelle }}</span>
+                </p>
+                <p fxLayout="row" fxLayoutAlign="start center">
+                        <span class="left">{{'control.method'| translate}} :</span>
+                        <span *ngIf="controleFiliale.controle.methode_controle" class="right">{{ controleFiliale.controle.methode_controle.libelle }}</span>
+                    </p>
+                <br />
+                <!--<a href="assets/templates/Fiche de collecte RA_01_CML.xlsx" target="_blank">
+                    <button mat-raised-button color="primary" class="left-btn">Télécharger template</button>
+                </a>-->
+                <a *ngIf="controleFiliale.controle.template" href="http://{{controleFiliale.controle.template.path}}" target="_blank">
+                    <button mat-raised-button color="primary" class="left-btn">{{'buton.download'| translate}} template</button>
+                </a>
+                <!--<a  (click)="downloadFile(controle);" matTooltip="Télécharger le template">
+                    <button mat-raised-button color="primary" class="left-btn">Télécharger template</button>
+                </a>-->
+                <!--<button mat-raised-button color="accent" class="right-btn" >{{'buton.loadfile'| translate}}</button>-->
+                
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <div fxFlex="65" class="flex-p">
+        <mat-card>
+            <mat-card-header fxLayout="row" fxLayoutAlign="space-around">
+                <div>
+                    <mat-form-field class="w-50">
+                        <mat-select placeholder="{{'title.exerciseyear'| translate}}" [(ngModel)]="selectedYear" (selectionChange)="onChange($event)" required>
+                            <mat-option *ngFor="let an of annees" [value]="an.annee">
+                                {{an.annee}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <h2>{{'title.datacol'| translate}}</h2>
+                <div *ngIf="loadingIndicator">
+                    <span>Chargement en cours...</span>
+                    <mat-progress-bar [color]="accent" mode="buffer" value="40"></mat-progress-bar>
+                </div>
+                <div *ngIf="dataSource"><button mat-raised-button pull-right color="accent" (click)="charger(controleFiliale)">{{'buton.load'| translate}}<mat-icon>cloud_upload</mat-icon></button></div>
+            </mat-card-header>
+        </mat-card>
+        <mat-table #table *ngIf="dataSource" [dataSource]="dataSource" class="mat-elevation-z8">
+            <ng-container matColumnDef="jour">
+                <mat-header-cell *matHeaderCellDef> DATE </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.date_debut | date :  "dd/MM/y"}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="risques_pertes_revenus">
+                <mat-header-cell *matHeaderCellDef> {{'suivi.riskloss'| translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.risque_pertes}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="pertes">
+                <mat-header-cell *matHeaderCellDef> {{'suivi.losses'| translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.perte}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="typologie_pertes">
+                <mat-header-cell *matHeaderCellDef> {{'suivi.typology'| translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.typologie_perte? element.typologie_perte.libelle:''}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="revenu_sauves">
+                <mat-header-cell *matHeaderCellDef> {{'suivi.saved'| translate}}</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.revenu_sauve}}</mat-cell>
+            </ng-container>
+            <!--<ng-container matColumnDef="total_HLR">
+                <mat-header-cell *matHeaderCellDef>{{controle.type_controle.code==='RA'?'TOTAL HLR':controle.type_controle.code==='FRA'? 'TOTAL SIMBOX':'COUNT DISTINCT OF USER' }} </mat-header-cell>
+                <mat-cell *matCellDef="let element">{{controle.type_controle.code==='RA'?element.total_hlr:controle.type_controle.code==='FRA'? element.total_simbox: element.count_distinct_ofuser}}</mat-cell>
+            </ng-container>
+            <!--<ng-container matColumnDef="volume_mn">
+                <mat-header-cell *matHeaderCellDef>{{controle.type_controle.code==='RA'?'Eccart (en mn)':controle.type_controle.code==='FRA'? 'TOTAL SIMBOX ONNET':'COUNT OF USER'}} </mat-header-cell>
+                <mat-cell *matCellDef="let element">{{controle.type_controle.code==='RA'?element.vlm_ecat:controle.type_controle.code==='FRA'? element.total_simbox_onnet:element.count_ofuser}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="correction">
+                <mat-header-cell *matHeaderCellDef> {{controle.type_controle.code==='RA'?'Correction': controle.type_controle.code==='FRA'? 'TOTAL SIMBOX OFFNET':'NB TRANSA GLOBAL'}} </mat-header-cell>
+                <mat-cell *matCellDef="let element">{{controle.type_controle.code==='RA'?(element.correction===1? 'Oui':element.correction===2?'Non':element.correction===3?'Non applicable':''):controle.type_controle.code==='FRA'?element.total_simbox_offnet: element.nb_transa_global}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="date_correction">
+                <mat-header-cell *matHeaderCellDef> {{controle.type_controle.code==='RA'?'Date correction': controle.type_controle.code==='FRA'? 'TOTAL MOU':'MTT BYPASS COM SOUS DIST '}}  </mat-header-cell>
+                <mat-cell *matCellDef="let element">{{controle.type_controle.code==='RA'?(element.date_correction| date : "dd/MM/y"):controle.type_controle.code==='FRA'? element.total_mou:element.mtt_bypass_com_sous_dist}} </mat-cell>
+            </ng-container>-->
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <a *ngIf="!element.date_saisie" (click)="saisir(element);" matTooltip="Saisir le suivi">
+                        <mat-icon>arrow_right_alt</mat-icon>
+                    </a>
+                    <a *ngIf="element.date_saisie" (click)="saisir(element);" matTooltip="Modifier le suivi">
+                        <mat-icon>settings</mat-icon>
+                    </a>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 30]"></mat-paginator>
+    </div>
+</div>
+<br /><br />

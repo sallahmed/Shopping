@@ -1,0 +1,29 @@
+.param-diffusion-form{
+    .form-field-outer{
+        width: 280px;
+    }
+    .mat-radio-button{
+        margin-right: 12px;
+    }
+}
+
+.detail{
+    width: 100%;
+}
+.detail, th, td {
+    border: 1px solid lightgrey
+}
+
+th {
+    /*padding: 5px;*/
+    color: #fff;
+    text-align: left;
+    background: #555;
+    font-weight: 600;
+    border: 1px solid #000;
+}
+td {
+    padding: 2px;
+    text-align: left;
+    border: 1px solid #000;
+}

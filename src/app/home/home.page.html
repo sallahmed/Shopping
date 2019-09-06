@@ -1,14 +1,22 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-title>
+            App Shopping
+        </ion-title>
+    </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
-  </div>
+<ion-content padding>
+    <p>C'est ici qu'on affichera les articles à vendre</p>
+    <img href="src/assets/icon/favicon.png" alt="" />
+    <ul *ngFor="let article of Articles">
+        <li>
+            {{ article.nom }} - {{ article.prix }} <br />{{ article.details }}
+            <button ion-button (click)="showDetails(article)">Détails</button>
+        </li>
+    </ul>
 </ion-content>
+
+<ion-footer class="mon-footer">
+    <p>Ceci est notre pied de page</p>
+</ion-footer>

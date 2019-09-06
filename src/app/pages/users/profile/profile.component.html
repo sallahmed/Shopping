@@ -1,0 +1,100 @@
+<form [formGroup]="form">
+<div fxLayout="column" fxLayout.gt-sm="row wrap">
+        <div fxFlex="35" class="flex-p">
+            <mat-card>
+                <mat-card-content>
+                    <div class="propic text-center profile-picture" (drop)="drop($event)" (dragover)="allowDrop($event)" formGroupName="photo">
+                        <img *ngIf="userImage" width=300 height=300 [src]="url" alt="" draggable="true"  (dragstart)="drag($event)" />
+                        <a href="#" (click)="openFileBrowser($event)" class="file-dummy"><label for="uploader-input" >
+                            <div class="infotext"><span *ngIf="!url" >Drop your picture<br>or click to upload</span></div>
+                        </label></a>
+                        <input type="file" id="uploader-input" style="display:none" (change)="onFileChange($event)"  />
+                    </div>
+                    <div class="profile-title" *ngIf="currentUser">
+                        <div class="main-title">{{currentUser.prenom}}  {{currentUser.nom}}</div>
+                        <div class="subtitle mb-05"><small>{{currentUser.profil.libelle}}</small></div>
+                    </div>
+                    <div class="profile-nav">
+                        <mat-nav-list class="mat-nav-list" role="navigation">
+                            <mat-list-item class="mat-list-item" routerlink="/profile/overview" routerlinkactive="list-item-active" tabindex="0">
+                                <div class="mat-list-item-content"><div class="mat-list-item-ripple mat-ripple" mat-ripple=""></div>
+                                    <div class="mat-list-text"></div>
+                                    <!--<mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">home</mat-icon>  Accueil-->
+                                </div>
+                            </mat-list-item>
+                            <mat-divider class="mat-divider" role="separator" aria-orientation="horizontal"></mat-divider>
+                            <mat-list-item class="mat-list-item list-item-active" routerlink="/profile/settings" routerlinkactive="list-item-active" tabindex="0">
+                                <div class="mat-list-item-content">
+                                    <div class="mat-list-item-ripple mat-ripple" mat-ripple=""></div>
+                                    <div class="mat-list-text"></div>
+                                    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">settings</mat-icon>{{'menu.config'| translate}}
+                                </div></mat-list-item>
+                            <mat-divider class="mat-divider" role="separator" aria-orientation="horizontal"></mat-divider>
+                        </mat-nav-list>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <div fxFlex="65" class="flex-p">
+            <mat-card>
+                <mat-card-content>
+
+                        <mat-tab-group class="horizontal-tabs">
+                            <mat-tab label="{{'title.general'| translate}}">
+                                <div fxLayout="column"class="form-field-outer">
+                                    <mat-form-field class="w-100">
+                                        <input matInput placeholder="{{'user.lastname'| translate}}" formControlName="nom" required>
+                                        <mat-error *ngIf="form.controls.nom.errors?.required">{{'user.namewarn'| translate}}</mat-error>
+                                        <mat-error *ngIf="form.controls.nom.hasError('minlength')">{{'user.namemin'| translate}}</mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-100">
+                                        <input matInput placeholder="{{'user.firstname'| translate}}" formControlName="prenom" required>
+                                        <mat-error *ngIf="form.controls.prenom.errors?.required">{{'user.firstnamewarn'| translate}}</mat-error>
+                                        <mat-error *ngIf="form.controls.prenom.hasError('minlength')">{{'user.namemin'| translate}}</mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-100">
+                                        <input matInput placeholder="{{'user.matricule'| translate}}" formControlName="matricule" required>
+                                        <mat-error *ngIf="form.controls.matricule.errors?.required">{{'user.matwarn'| translate}}</mat-error>
+                                        <mat-error *ngIf="form.controls.matricule.hasError('minlength')">{{'user.matmin'| translate}}</mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-100">
+                                        <input matInput placeholder="{{'user.email'| translate}}" formControlName="email" required>
+                                        <mat-error *ngIf="form.controls.email.errors?.required">{{'user.emailwarn'| translate}}</mat-error>
+                                        <mat-error *ngIf="form.controls.email.hasError('invalidEmail')">{{'user.emailerr'| translate}}</mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-100">
+                                        <input matInput placeholder="{{'user.phone'| translate}}" formControlName="telephone" required>
+                                    </mat-form-field>
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="{{'user.infoperso'| translate}}">
+                                <div fxLayout="column" class="form-field-outer">
+                                    <mat-form-field class="w-100">
+                                        <mat-placeholder><mat-icon>person</mat-icon> {{'user.username'| translate}}</mat-placeholder>
+                                        <input matInput formControlName="username" required>
+                                        <mat-error *ngIf="form.controls.username.errors?.required">{{'user.idwarn'| translate}}</mat-error>
+                                        <mat-error *ngIf="form.controls.username.hasError('minlength')">{{'user.idinvalid'| translate}}</mat-error>
+                                    </mat-form-field>
+                                    <!--<mat-form-field class="w-100">
+                                        <mat-placeholder><mat-icon>vpn_key</mat-icon> Mot de passe</mat-placeholder>
+                                        <input matInput formControlName="password" required [type]="passwordHide ? 'password' : 'text'">
+                                        <mat-icon matSuffix (click)="passwordHide = !passwordHide">{{passwordHide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                                        <mat-error *ngIf="form.controls.password.errors?.required">Le mot de passe est obligatoire</mat-error>
+                                        <mat-error *ngIf="form.controls.password.hasError('minlength')">Le mot de passe est trop court, minimum 6 caractères</mat-error>
+                                    </mat-form-field>-->
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
+
+                </mat-card-content>
+                <mat-card-actions fxLayout="row" fxLayoutAlign="space-between center">
+                    <button mat-raised-button color="accent" (click)="save(form.value)" [disabled]="!form.valid"><span>{{'buton.ok'| translate}}</span></button>
+                    <button mat-raised-button color="warn" (click)="close()">{{'buton.no'| translate}}</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+</div>
+<div *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center" class="user-spinner">
+    <mat-spinner color="primary"></mat-spinner>
+</div>
+</form>

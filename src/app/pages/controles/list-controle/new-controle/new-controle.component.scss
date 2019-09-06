@@ -1,0 +1,19 @@
+.new-controle-form{
+    .form-field-outer{
+        width: 280px;
+    }
+    .mat-radio-button{
+        margin-right: 12px;
+    }
+    .form-tree-select{
+        width:280px;
+        height: auto;
+        overflow: auto;
+        //float: left;
+        //display: inline-block;
+       // min-height: 100px;
+        //flex-grow: 1;
+        //text-overflow: ellipsis;
+        //overflow: hidden;
+    }
+}
